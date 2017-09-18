@@ -1,0 +1,754 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>API reference &#8212; QMcaspian 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Scripts reference" href="scripts.html" />
+    <link rel="prev" title="TODO" href="TODO.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="TODO.html" title="TODO"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">QMcaspian 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-reference">
+<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-atom">
+<span id="atom"></span><h2>Atom<a class="headerlink" href="#module-atom" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-atom"></span><dl class="class">
+<dt id="atom.Atom">
+<em class="property">class </em><code class="descclassname">atom.</code><code class="descname">Atom</code><span class="sig-paren">(</span><em>num=0</em>, <em>nam='ND'</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>typ='ND'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom.html#Atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#atom.Atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to store the coordinates (x,y,z) and other atom properties.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>Parm num</strong> (<code class="xref py py-class docutils literal"><span class="pre">int</span></code>):      Atom number.</li>
+<li><strong>Parm nam</strong> (<code class="xref py py-class docutils literal"><span class="pre">int</span></code>):      Atom name.</li>
+<li><strong>Parm x</strong> (<code class="xref py py-class docutils literal"><span class="pre">float</span></code>):        Atom x coordinate.</li>
+<li><strong>Parm y</strong> (<code class="xref py py-class docutils literal"><span class="pre">float</span></code>):        Atom y coordinate.</li>
+<li><strong>Parm z</strong> (<code class="xref py py-class docutils literal"><span class="pre">float</span></code>):        Atom name.</li>
+<li><strong>Parm typ</strong> (<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>):     Atom type (element)</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Initializing an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> object with arguments is optional.</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="s1">&#39;OH&#39;</span><span class="p">,</span> <span class="mf">13.015</span><span class="p">,</span> <span class="mf">20.145</span><span class="p">,</span> <span class="mf">21.457</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="attribute">
+<dt id="atom.Atom.copy">
+<code class="descname">copy</code><a class="headerlink" href="#atom.Atom.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a deepcopy of Atom object.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">121</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">O</span><span class="o">.</span><span class="n">copy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[12, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;H&#39;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A variable assignment only creates another link to the same object. If you wish to create a new
+object, use <em>copy</em> function.</p>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">H</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">typ</span> <span class="o">=</span> <span class="s1">&#39;O&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[2, &#39;ND&#39;, 0.0, 0.0, 0.0, &#39;O&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="atom.Atom.cord">
+<code class="descname">cord</code><a class="headerlink" href="#atom.Atom.cord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns coordinates.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">cord</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.015</span><span class="p">,</span> <span class="mf">20.145</span><span class="p">,</span> <span class="mf">21.457</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">O</span><span class="o">.</span><span class="n">cord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+<span class="go">3.015 20.145 21.457</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">cord</span> <span class="o">=</span> <span class="p">[</span><span class="mf">13.000</span><span class="p">,</span> <span class="mf">20.145</span><span class="p">,</span> <span class="mf">21.457</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">cord</span>
+<span class="go">[13.0, 20.145, 21.457]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span> <span class="o">=</span> <span class="n">O</span><span class="o">.</span><span class="n">cord</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyz</span>
+<span class="go">[13.0, 20.145, 21.457]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="atom.Atom.nam">
+<code class="descname">nam</code><a class="headerlink" href="#atom.Atom.nam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns atom name.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">nam</span>
+<span class="go">&#39;ND&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">nam</span> <span class="o">=</span> <span class="s1">&#39;OG&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">nam</span>
+<span class="go">&#39;OG&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="atom.Atom.num">
+<code class="descname">num</code><a class="headerlink" href="#atom.Atom.num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns atom number.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">num</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="s1">&#39;10&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">num</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="atom.Atom.show">
+<code class="descname">show</code><a class="headerlink" href="#atom.Atom.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns num, nam, x, y, z, typ.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">121</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="atom.Atom.tolerance">
+<code class="descname">tolerance</code><em class="property"> = 1e-05</em><a class="headerlink" href="#atom.Atom.tolerance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="atom.Atom.typ">
+<code class="descname">typ</code><a class="headerlink" href="#atom.Atom.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns atom type.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">typ</span>
+<span class="go">&#39;ND&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">typ</span> <span class="o">=</span> <span class="s1">&#39;O&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span><span class="o">.</span><span class="n">typ</span>
+<span class="go">&#39;O&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">O</span><span class="o">.</span><span class="n">typ</span><span class="p">)</span>
+<span class="go">O</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-molecule">
+<span id="molecule"></span><h2>Molecule<a class="headerlink" href="#module-molecule" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-atom"></span><dl class="class">
+<dt id="molecule.Molecule">
+<em class="property">class </em><code class="descclassname">molecule.</code><code class="descname">Molecule</code><span class="sig-paren">(</span><em>num=0</em>, <em>nam=None</em>, <em>atms=None</em>, <em>head=None</em>, <em>tail=None</em>, <em>pos=None</em>, <em>chainnum=None</em>, <em>chainnam=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/molecule.html#Molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#molecule.Molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to store a collection of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> objects. This class is iterable.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>Parm num</strong> (<code class="xref py py-class docutils literal"><span class="pre">int</span></code>):      Molecule number.</li>
+<li><strong>Parm nam</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>):      Molecule name.</li>
+<li><strong>Parm atms</strong> (<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>):    List of atoms in the molecule.</li>
+<li><strong>Parm natm</strong> (<code class="xref py py-class docutils literal"><span class="pre">int</span></code>):     Number of atoms in the molecule</li>
+<li><strong>Parm head</strong> (<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>):    The head atom in the molecule. Used for connecting residues.</li>
+<li><strong>Parm tail</strong> (<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>):    The tail atom in the molecule. Used for connecting residues.</li>
+<li><strong>Parm pos</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>):      The position of the molecule in a macromolecule (FIRST or LAST). Used for connecting residues.</li>
+<li><strong>Parm chainnum</strong> (<code class="xref py py-class docutils literal"><span class="pre">int</span></code>): Molecule chain number.</li>
+<li><strong>Parm chainnam</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>): Molecule chain name</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Initializing a <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> object with arguments is optional. It is possible to initialize a molecule object
+by one or a list of atom object. Number of atoms (<em>natm</em>) is set automatically.</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O</span>  <span class="o">=</span> <span class="n">Atom</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O4</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">molecule_O</span>  <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="n">O</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">molecule_O4</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="n">O4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">molecule_O4</span><span class="p">):</span>
+<span class="gp">... </span> <span class="nb">print</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+<span class="go">0 - 1</span>
+<span class="go">1 - 2</span>
+<span class="go">2 - 3</span>
+<span class="go">3 - 4</span>
+</pre></div>
+</div>
+</div>
+<dl class="method">
+<dt id="molecule.Molecule.addatm">
+<code class="descname">addatm</code><span class="sig-paren">(</span><em>atm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/molecule.html#Molecule.addatm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#molecule.Molecule.addatm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends atom(s) object to a molecule</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H1</span><span class="p">,</span> <span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H2</span> <span class="o">=</span> <span class="n">H1</span><span class="o">.</span><span class="n">copy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">addatm</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">addatm</span><span class="p">(</span><span class="n">H2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;HOH&#39;, 2]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">addatm</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;HOH&#39;, 3]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>addatm</em> appends a hard copy of input variables.</p>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H1</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H2</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HH&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">addatm</span><span class="p">([</span><span class="n">H1</span><span class="p">,</span> <span class="n">H2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">([[</span><span class="n">atom</span><span class="o">.</span><span class="n">num</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">typ</span><span class="p">]</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">HOH</span><span class="p">])</span>
+<span class="go">[[1, &#39;H&#39;], [1, &#39;H&#39;]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H1</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">([[</span><span class="n">atom</span><span class="o">.</span><span class="n">num</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">typ</span><span class="p">]</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">HOH</span><span class="p">])</span>
+<span class="go">[[1, &#39;H&#39;], [1, &#39;H&#39;]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.chainnam">
+<code class="descname">chainnam</code><a class="headerlink" href="#molecule.Molecule.chainnam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns/Sets chain name that molecule belongs to.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">chainnam</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">chainnam</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">chainnam</span>
+<span class="go">&#39;A&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.chainnum">
+<code class="descname">chainnum</code><a class="headerlink" href="#molecule.Molecule.chainnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns/Sets chain number that molecule belongs to.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">chainnum</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">chainnum</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">chainnum</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.copy">
+<code class="descname">copy</code><a class="headerlink" href="#molecule.Molecule.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a deepcopy of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> object.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH1</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH2</span> <span class="o">=</span> <span class="n">HOH1</span><span class="o">.</span><span class="n">copy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH2</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;HOH&#39;, 0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH2</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH2</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[2, &#39;HOH&#39;, 0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH1</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;HOH&#39;, 0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.head">
+<code class="descname">head</code><a class="headerlink" href="#molecule.Molecule.head" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns Molecule head atom. The <code class="xref py py-class docutils literal"><span class="pre">Molecule.head</span></code> accepts an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>, a <em>str</em>, or an <em>int</em>. If
+an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> object is given, it should exist in the molecule otherwise a ValueError is raised.
+If a <em>str</em> or an <em>int</em> is given, the atoms in the molecule are searched for a unique match and
+<code class="xref py py-class docutils literal"><span class="pre">Molecule.head</span></code> points to that. If multiple values was found an ValueError exception is raised.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ATOMS</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="n">ATOMS</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span><span class="p">)</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">HOH</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;H1&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span><span class="p">)</span> <span class="ow">is</span> <span class="n">HOH</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Here the head function tries to find an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> that is equal to the input and assigns the head to that.
+In other word, the head <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> always points to an atom that belongs to the molecule, even if, the input
+<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> does not belong to the molecule.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">ATOMS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span><span class="p">)</span> <span class="ow">is</span> <span class="n">HOH</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span> <span class="o">==</span> <span class="n">ATOMS</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span> <span class="ow">is</span> <span class="n">ATOMS</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="s1">&#39;H2&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[2, &#39;H2&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[3, &#39;O&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">HOH</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="mi">23</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<span class="go">The input Atom number either was not found or has multiple occurrences</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.nam">
+<code class="descname">nam</code><a class="headerlink" href="#molecule.Molecule.nam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns Molecule number.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">nam</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">nam</span> <span class="o">=</span> <span class="s1">&#39;HOH&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">nam</span>
+<span class="go">&#39;HOH&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.natm">
+<code class="descname">natm</code><a class="headerlink" href="#molecule.Molecule.natm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns number of atoms in a molecule.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O4</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(),</span> <span class="n">Atom</span><span class="p">(),</span> <span class="n">Atom</span><span class="p">(),</span> <span class="n">Atom</span><span class="p">()]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">molecule_O4</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="n">O4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">molecule_O4</span><span class="o">.</span><span class="n">natm</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.num">
+<code class="descname">num</code><a class="headerlink" href="#molecule.Molecule.num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns Molecule number.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">num</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">num</span>
+<span class="go">12</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.pos">
+<code class="descname">pos</code><a class="headerlink" href="#molecule.Molecule.pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns the position of the molecule in a <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code>. Could be set to “FIRST” or “LAST” for
+first or last residue in a chain.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">pos</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="s1">&#39;FIRST&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">HOH</span><span class="o">.</span><span class="n">pos</span> <span class="ow">is</span> <span class="s1">&#39;FIRST&#39;</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;First residue&#39;</span><span class="p">)</span>
+<span class="go">First residue</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="molecule.Molecule.selectbyAtomnam">
+<code class="descname">selectbyAtomnam</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/molecule.html#Molecule.selectbyAtomnam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#molecule.Molecule.selectbyAtomnam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> or a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> with the given <a class="reference internal" href="#atom.Atom.nam" title="atom.Atom.nam"><code class="xref py py-class docutils literal"><span class="pre">Atom.nam</span></code></a>. If only one <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>,
+was found and <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> object is returned. Otherwise a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> objects is returned.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ATOMS</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HC&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HC&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="n">ATOMS</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">select</span> <span class="o">=</span> <span class="n">HOH</span><span class="o">.</span><span class="n">selectbyAtomnam</span><span class="p">(</span><span class="s1">&#39;HC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">show</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">select</span><span class="p">]</span>
+<span class="go">[[0, &#39;HC&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;], [0, &#39;HC&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="molecule.Molecule.selectbyAtomnum">
+<code class="descname">selectbyAtomnum</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/molecule.html#Molecule.selectbyAtomnum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#molecule.Molecule.selectbyAtomnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> or a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> with the given <a class="reference internal" href="#atom.Atom.num" title="atom.Atom.num"><code class="xref py py-class docutils literal"><span class="pre">Atom.num</span></code></a>. If only one <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>,
+was found and <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> object is returned. Otherwise a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> objects is returned.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ATOMS</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="n">ATOMS</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">select</span> <span class="o">=</span> <span class="n">HOH</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">select</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;ND&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.show">
+<code class="descname">show</code><a class="headerlink" href="#molecule.Molecule.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns num, nam, natm.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">,</span> <span class="n">O</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">H</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">O</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;HOH&#39;, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="molecule.Molecule.tail">
+<code class="descname">tail</code><a class="headerlink" href="#molecule.Molecule.tail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/Returns Molecule tail atom. The <code class="xref py py-class docutils literal"><span class="pre">Molecule.tail</span></code> accepts an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>, a <em>str</em>, or an <em>int</em>. If
+an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> object is given, it should exist in the molecule otherwise a ValueError is raised (see <code class="xref py py-class docutils literal"><span class="pre">Molecule.head</span></code>).
+If a <em>str</em> or an <em>int</em> is given, the atoms in the molecule are searched for a unique match and
+<code class="xref py py-class docutils literal"><span class="pre">Molecule.head</span></code> points to that. If multiple values was found an ValueError exception is raised.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ATOMS</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="n">ATOMS</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HOH</span><span class="o">.</span><span class="n">tail</span><span class="p">)</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">HOH</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;H1&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="s1">&#39;H2&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[2, &#39;H2&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HOH</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[3, &#39;O&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">HOH</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="mi">23</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<span class="go">The input Atom number either was not found or has multiple occurrences</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-macromolecule">
+<span id="macromolecule"></span><h2>Macromolecule<a class="headerlink" href="#module-macromolecule" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-atom"></span><dl class="class">
+<dt id="macromolecule.Macromolecule">
+<em class="property">class </em><code class="descclassname">macromolecule.</code><code class="descname">Macromolecule</code><span class="sig-paren">(</span><em>nam=None</em>, <em>mols=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/macromolecule.html#Macromolecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#macromolecule.Macromolecule" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>A class to store a collection of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> objects.</dt>
+<dd><ul class="first last simple">
+<li><strong>Parm nam</strong> (<code class="xref py py-class docutils literal"><span class="pre">str</span></code>):      Molecule name.</li>
+<li><strong>Parm mols</strong> (<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>):    List of atoms in the molecule.</li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Under construction</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Initializing a <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code> object with arguments is optional. It is possible to initialize a <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code> object
+by one or a list of <a class="reference internal" href="#module-molecule" title="molecule"><code class="xref py py-class docutils literal"><span class="pre">molecule</span></code></a> object. Number of molecules (<em>nmol</em>) is set automatically.</p>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reslist</span> <span class="o">=</span> <span class="p">[</span><span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;ARG&#39;</span><span class="p">),</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;ALA&#39;</span><span class="p">),</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">),]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;peptide A1&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="n">reslist</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="macromolecule.Macromolecule.addmol">
+<code class="descname">addmol</code><span class="sig-paren">(</span><em>mol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/macromolecule.html#Macromolecule.addmol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#macromolecule.Macromolecule.addmol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends a hard copy of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> object(s) to a <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code> object.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">,</span> <span class="n">res3</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;ARG&#39;</span><span class="p">),</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;ALA&#39;</span><span class="p">),</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;peptide A1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[&#39;peptide A1&#39;, 0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">addmol</span><span class="p">(</span><span class="n">res1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">addmol</span><span class="p">([</span><span class="n">res2</span><span class="p">,</span> <span class="n">res3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[&#39;peptide A1&#39;, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="macromolecule.Macromolecule.atoms">
+<code class="descname">atoms</code><a class="headerlink" href="#macromolecule.Macromolecule.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of atoms in a <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res1</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res2</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res3</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;peptide A1&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="p">[</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">,</span> <span class="n">res3</span><span class="p">])</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[[</span><span class="n">atom</span><span class="o">.</span><span class="n">num</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">nam</span><span class="p">]</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">peptide</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span>
+<span class="go">[[1, &#39;H1&#39;], [2, &#39;H2&#39;], [3, &#39;H3&#39;], [4, &#39;O1&#39;], [5, &#39;O2&#39;], [6, &#39;O3&#39;], [7, &#39;N1&#39;], [8, &#39;N2&#39;], [9, &#39;N3&#39;]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="macromolecule.Macromolecule.copy">
+<code class="descname">copy</code><a class="headerlink" href="#macromolecule.Macromolecule.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a deepcopy of <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code> object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="macromolecule.Macromolecule.nmol">
+<code class="descname">nmol</code><a class="headerlink" href="#macromolecule.Macromolecule.nmol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns number of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> in a <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="p">[</span><span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">nmol</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="macromolecule.Macromolecule.selectbyAtomnam">
+<code class="descname">selectbyAtomnam</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/macromolecule.html#Macromolecule.selectbyAtomnam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#macromolecule.Macromolecule.selectbyAtomnam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> or a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> with the given <a class="reference internal" href="#atom.Atom.nam" title="atom.Atom.nam"><code class="xref py py-class docutils literal"><span class="pre">Atom.nam</span></code></a>. If only one
+<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> was found, an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> object is returned. Otherwise a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>
+objects is returned.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res1</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res1&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res2</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res2&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res3</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res3&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;peptide A1&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="p">[</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">,</span> <span class="n">res3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">selectbyAtomnam</span><span class="p">(</span><span class="s1">&#39;O1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[4, &#39;O1&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="macromolecule.Macromolecule.selectbyAtomnum">
+<code class="descname">selectbyAtomnum</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/macromolecule.html#Macromolecule.selectbyAtomnum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#macromolecule.Macromolecule.selectbyAtomnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> or a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> with the given <a class="reference internal" href="#atom.Atom.num" title="atom.Atom.num"><code class="xref py py-class docutils literal"><span class="pre">Atom.num</span></code></a>. If only one
+<a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> was found, an <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> object is returned. Otherwise a list of <a class="reference internal" href="#atom.Atom" title="atom.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a>
+objects is returned.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res1</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res1&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res2</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res2&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res3</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res3&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;peptide A1&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="p">[</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">,</span> <span class="n">res3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[9, &#39;N3&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="macromolecule.Macromolecule.selectbyMolnam">
+<code class="descname">selectbyMolnam</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/macromolecule.html#Macromolecule.selectbyMolnam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#macromolecule.Macromolecule.selectbyMolnam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> or a list of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> with the given <code class="xref py py-class docutils literal"><span class="pre">Molecule.nam</span></code>. If only one
+<code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> was found, an <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> object is returned. Otherwise a list of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code>
+objects is returned.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res1</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res1&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res2</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res2&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res3</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res3&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;peptide A1&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="p">[</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">,</span> <span class="n">res3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">selectbyMolnam</span><span class="p">(</span><span class="s1">&#39;res2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[2, &#39;res2&#39;, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="macromolecule.Macromolecule.selectbyMolnum">
+<code class="descname">selectbyMolnum</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/macromolecule.html#Macromolecule.selectbyMolnum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#macromolecule.Macromolecule.selectbyMolnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> or a list of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> with the given <code class="xref py py-class docutils literal"><span class="pre">Molecule.num</span></code>. If only one
+<code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> was found, an <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code> object is returned. Otherwise a list of <code class="xref py py-class docutils literal"><span class="pre">Molecule</span></code>
+objects is returned.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">res1</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res1&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res2</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res1&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res3</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;res1&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;N3&#39;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;peptide A1&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="p">[</span><span class="n">res1</span><span class="p">,</span> <span class="n">res2</span><span class="p">,</span> <span class="n">res3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">selectbyMolnum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[1, &#39;res1&#39;, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="macromolecule.Macromolecule.show">
+<code class="descname">show</code><a class="headerlink" href="#macromolecule.Macromolecule.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns nam, nmol.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span> <span class="o">=</span> <span class="n">Macromolecule</span><span class="p">(</span><span class="n">nam</span><span class="o">=</span><span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="n">mols</span><span class="o">=</span><span class="p">[</span><span class="n">Molecule</span><span class="p">(),</span> <span class="n">Molecule</span><span class="p">(),</span> <span class="n">Molecule</span><span class="p">()])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peptide</span><span class="o">.</span><span class="n">show</span>
+<span class="go">[&#39;A2&#39;, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-parse_qm">
+<span id="parse-qm"></span><h2>parse_qm<a class="headerlink" href="#module-parse_qm" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="parse_qm.OptG09">
+<em class="property">class </em><code class="descclassname">parse_qm.</code><code class="descname">OptG09</code><span class="sig-paren">(</span><em>ifile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_qm.html#OptG09"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_qm.OptG09" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to read and save G09 optimization output. This class inherits from <code class="xref py py-class docutils literal"><span class="pre">Macromolecule</span></code>.
+This class assumes the given file exists and is G09 optimization output. Use the <a class="reference internal" href="#parse_qm.ParseGaussian" title="parse_qm.ParseGaussian"><code class="xref py py-class docutils literal"><span class="pre">ParseGaussian</span></code></a> if error
+management is needed.</p>
+<dl class="method">
+<dt id="parse_qm.OptG09.parse_opt_g09">
+<code class="descname">parse_opt_g09</code><span class="sig-paren">(</span><em>ifile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_qm.html#OptG09.parse_opt_g09"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_qm.OptG09.parse_opt_g09" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="parse_qm.ParseGaussian">
+<em class="property">class </em><code class="descclassname">parse_qm.</code><code class="descname">ParseGaussian</code><span class="sig-paren">(</span><em>ifile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_qm.html#ParseGaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_qm.ParseGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class reads the header section of a Gaussian output and initiate a corresponding parser class.</p>
+<dl class="method">
+<dt id="parse_qm.ParseGaussian.getheader">
+<code class="descname">getheader</code><span class="sig-paren">(</span><em>ifile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_qm.html#ParseGaussian.getheader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_qm.ParseGaussian.getheader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks input file header for Gaussian version and command line options</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="parse_qm.parseQM">
+<code class="descclassname">parse_qm.</code><code class="descname">parseQM</code><span class="sig-paren">(</span><em>ifile</em>, <em>program</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/parse_qm.html#parseQM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#parse_qm.parseQM" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a warper function for classes that parse the QM calculations output files</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-atom_table">
+<span id="atom-table"></span><h2>atom_table<a class="headerlink" href="#module-atom_table" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="atom_table.atom_property">
+<code class="descclassname">atom_table.</code><code class="descname">atom_property</code><span class="sig-paren">(</span><em>query</em>, <em>target</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom_table.html#atom_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#atom_table.atom_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the atomic property (query) based on the given atomic property (traget) with a given value (value)</p>
+<ul class="simple">
+<li><strong>parm query</strong>: needed atomic property</li>
+<li><strong>parm target</strong>: given atomic property</li>
+<li><strong>parm value</strong>: the value of given atomic property</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">atom_property</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">25</span><span class="p">))</span>
+<span class="go">Mn</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">atom_property</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">25</span><span class="p">))</span>
+<span class="go">54.93805</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API reference</a><ul>
+<li><a class="reference internal" href="#module-atom">Atom</a></li>
+<li><a class="reference internal" href="#module-molecule">Molecule</a></li>
+<li><a class="reference internal" href="#module-macromolecule">Macromolecule</a></li>
+<li><a class="reference internal" href="#module-parse_qm">parse_qm</a></li>
+<li><a class="reference internal" href="#module-atom_table">atom_table</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="TODO.html"
+                        title="previous chapter">TODO</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scripts.html"
+                        title="next chapter">Scripts reference</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="TODO.html" title="TODO"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">QMcaspian 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Masoud Kazemi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

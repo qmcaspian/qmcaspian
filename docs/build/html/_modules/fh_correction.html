@@ -1,0 +1,221 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fh_correction &#8212; QMcaspian 1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for fh_correction</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">parse_qm</span> <span class="k">import</span> <span class="n">parseQM</span>
+
+
+<div class="viewcode-block" id="fh_correction"><a class="viewcode-back" href="../scripts.html#fh_correction.fh_correction">[docs]</a><span class="k">def</span> <span class="nf">fh_correction</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This script reads a Gaussian optimization output and uses the last structure in the file to generate the input files</span>
+<span class="sd">    for frq, big basis set and solvation corrections.</span>
+
+<span class="sd">    * How to set up:</span>
+
+<span class="sd">        export the library directories to PYTHONPATH. In my case it is</span>
+
+<span class="sd">        **&gt;&gt;&gt; export PYTHONPATH=$PYTHONPATH:/home/masoud/QMcaspian/src/**</span>
+
+<span class="sd">        export the scripts directory to PATH</span>
+
+<span class="sd">        **&gt;&gt;&gt; export PATH=$PATH:/home/masoud/QMcaspian/scripts/**</span>
+
+<span class="sd">    * How to use:</span>
+
+<span class="sd">        *&gt;&gt;&gt; fh_correction.py [-n (int) (structure number to be used)] &lt;inputfile&gt;*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Structure number to be used for generation of the input files</span>
+    <span class="n">structure_num</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Read the command line arguments</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;input_file&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;input file&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-n&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Structure number to be used for generating input&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">ifile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">input_file</span>
+    <span class="n">structure_num</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n</span>
+
+    <span class="c1"># Read the input file</span>
+    <span class="n">opt</span> <span class="o">=</span> <span class="n">parseQM</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check the convergence</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">opt</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning, the optimization is not converged&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Print the structure number that is used</span>
+    <span class="k">if</span> <span class="n">structure_num</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using the last structure for correction files: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">nmol</span><span class="p">))</span>
+        <span class="n">structure_num</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">nmol</span>
+
+    <span class="k">elif</span> <span class="n">structure_num</span> <span class="o">&gt;</span> <span class="n">opt</span><span class="o">.</span><span class="n">nmol</span> <span class="ow">or</span> <span class="n">structure_num</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: The given structure number is out of range&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;         Using the last structure for correction files: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">nmol</span><span class="p">))</span>
+        <span class="n">structure_num</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">nmol</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Structure &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">structure_num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; is used for input generation.&quot;</span><span class="p">)</span>
+
+
+    <span class="c1"># Write the frq</span>
+    <span class="n">out_filename</span> <span class="o">=</span> <span class="n">ifile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_frq.inp&#39;</span>
+    <span class="n">out_f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;%nprocshared=16</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;%mem=16GB</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;#p freq b3lyp/6-31g(d,p) empiricaldispersion=gd3</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;Title Card Required</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">selectbyMolnum</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">nmol</span><span class="p">):</span>
+        <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%2s</span><span class="s1">     </span><span class="si">%10f</span><span class="s1">   </span><span class="si">%10f</span><span class="s1">   </span><span class="si">%10f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">nam</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Write the big basis set</span>
+    <span class="n">out_filename</span> <span class="o">=</span> <span class="n">ifile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_bbs.inp&#39;</span>
+    <span class="n">out_f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;%nprocshared=16</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;%mem=16GB</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;#p b3lyp/6-311+g(2d,2p) empiricaldispersion=gd3</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;Title Card Required</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">selectbyMolnum</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">nmol</span><span class="p">):</span>
+        <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%2s</span><span class="s1">     </span><span class="si">%10f</span><span class="s1">   </span><span class="si">%10f</span><span class="s1">   </span><span class="si">%10f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">nam</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Write the solvation</span>
+    <span class="n">out_filename</span> <span class="o">=</span> <span class="n">ifile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_solv.inp&#39;</span>
+    <span class="n">out_f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;%nprocshared=16</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;%mem=16GB</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;#p b3lyp/6-31g(d,p) scrf=(solvent=water,read,smd) empiricaldispersion=gd3</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;Title Card Required</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">opt</span><span class="o">.</span><span class="n">selectbyMolnum</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">nmol</span><span class="p">):</span>
+        <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%2s</span><span class="s1">     </span><span class="si">%10f</span><span class="s1">   </span><span class="si">%10f</span><span class="s1">   </span><span class="si">%10f</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">nam</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atom</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;eps=4&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">fh_correction</span><span class="p">()</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Masoud Kazemi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

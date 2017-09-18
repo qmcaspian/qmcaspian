@@ -1,0 +1,157 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>atom_table &#8212; QMcaspian 1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for atom_table</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+
+
+<div class="viewcode-block" id="atom_property"><a class="viewcode-back" href="../api.html#atom_table.atom_property">[docs]</a><span class="k">def</span> <span class="nf">atom_property</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    returns the atomic property (query) based on the given atomic property (traget) with a given value (value)</span>
+
+<span class="sd">    - **parm query**: needed atomic property</span>
+<span class="sd">    - **parm target**: given atomic property</span>
+<span class="sd">    - **parm value**: the value of given atomic property</span>
+
+<span class="sd">    &gt;&gt;&gt; print(atom_property(query=&#39;symbol&#39;, target=&#39;number&#39;, value=25))</span>
+<span class="sd">    Mn</span>
+<span class="sd">    &gt;&gt;&gt; print(atom_property(query=&#39;mass&#39;, target=&#39;number&#39;, value=25))</span>
+<span class="sd">    54.93805</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">innput</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">properties</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="s1">&#39;mass&#39;</span><span class="p">]</span>
+    <span class="n">atom_table</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;Hydrogen&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.00794</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Helium&#39;</span><span class="p">,</span> <span class="s1">&#39;He&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">4.002602</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Lithium&#39;</span><span class="p">,</span> <span class="s1">&#39;Li&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">6.941</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Beryllium&#39;</span><span class="p">,</span> <span class="s1">&#39;Be&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">9.01218</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Boron&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">10.811</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Carbon&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mf">12.011</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Nitrogen&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">14.00674</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Oxygen&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">15.9994</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Fluorine&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mf">18.998403</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Neon&#39;</span><span class="p">,</span> <span class="s1">&#39;Ne&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">20.1797</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Sodium&#39;</span><span class="p">,</span> <span class="s1">&#39;Na&#39;</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mf">22.989768</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Magnesium&#39;</span><span class="p">,</span> <span class="s1">&#39;Mg&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mf">24.305</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Aluminum&#39;</span><span class="p">,</span> <span class="s1">&#39;Al&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mf">26.981539</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="s1">&#39;Si&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mf">28.0855</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Phosphorus&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mf">30.973762</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Sulfur&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mf">32.066</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Chlorine&#39;</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mf">35.4527</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Argon&#39;</span><span class="p">,</span> <span class="s1">&#39;Ar&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mf">39.948</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Potassium&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mf">39.0983</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Calcium&#39;</span><span class="p">,</span> <span class="s1">&#39;Ca&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">40.078</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Scandium&#39;</span><span class="p">,</span> <span class="s1">&#39;Sc&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">44.95591</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Titanium&#39;</span><span class="p">,</span> <span class="s1">&#39;Ti&#39;</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mf">47.88</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Vanadium&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mf">50.9415</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Chromium&#39;</span><span class="p">,</span> <span class="s1">&#39;Cr&#39;</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mf">51.9961</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Manganese&#39;</span><span class="p">,</span> <span class="s1">&#39;Mn&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mf">54.93805</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Iron&#39;</span><span class="p">,</span> <span class="s1">&#39;Fe&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mf">55.847</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Cobalt&#39;</span><span class="p">,</span> <span class="s1">&#39;Co&#39;</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mf">58.9332</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Nickel&#39;</span><span class="p">,</span> <span class="s1">&#39;Ni&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mf">58.6934</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Copper&#39;</span><span class="p">,</span> <span class="s1">&#39;Cu&#39;</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mf">63.546</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Zinc&#39;</span><span class="p">,</span> <span class="s1">&#39;Zn&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mf">65.39</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Gallium&#39;</span><span class="p">,</span> <span class="s1">&#39;Ga&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mf">69.723</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Germanium&#39;</span><span class="p">,</span> <span class="s1">&#39;Ge&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mf">72.61</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Arsenic&#39;</span><span class="p">,</span> <span class="s1">&#39;As&#39;</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mf">74.92159</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Selenium&#39;</span><span class="p">,</span> <span class="s1">&#39;Se&#39;</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mf">78.96</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Bromine&#39;</span><span class="p">,</span> <span class="s1">&#39;Br&#39;</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mf">79.904</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s1">&#39;Krypton&#39;</span><span class="p">,</span> <span class="s1">&#39;Kr&#39;</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mf">83.8</span><span class="p">]]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">parm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">properties</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">parm</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span> <span class="n">innput</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">parm</span> <span class="o">==</span> <span class="n">query</span><span class="p">:</span> <span class="n">output</span> <span class="o">=</span> <span class="n">i</span>
+
+    <span class="k">if</span> <span class="n">innput</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">output</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The selected properties were not found. query=&quot;</span> <span class="o">+</span> <span class="n">query</span> <span class="o">+</span> <span class="s2">&quot;  target=&quot;</span> <span class="o">+</span> <span class="n">target</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> \
+                         <span class="s2">&quot;The accepted keywords are: &#39;name&#39;, &#39;symbol&#39;, &#39;number&#39;, &#39;mass&#39;&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">atom_table</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">innput</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">row</span><span class="p">[</span><span class="n">output</span><span class="p">]</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">atom_property</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">))</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Masoud Kazemi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

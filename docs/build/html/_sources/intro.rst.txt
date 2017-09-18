@@ -1,0 +1,5 @@
+Introduction
+============
+
+QMCaspian is a Python library for integrated QM/MM calculations and post calculations analysis.
+

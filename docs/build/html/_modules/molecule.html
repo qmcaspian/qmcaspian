@@ -1,0 +1,529 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>molecule &#8212; QMcaspian 1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for molecule</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: atom</span>
+<span class="sd">   :platform: Unix</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">atom</span> <span class="k">import</span> <span class="n">Atom</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+
+<div class="viewcode-block" id="Molecule"><a class="viewcode-back" href="../api.html#molecule.Molecule">[docs]</a><span class="k">class</span> <span class="nc">Molecule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to store a collection of :class:`Atom` objects. This class is iterable.</span>
+
+<span class="sd">       - **Parm num** (:class:`int`):      Molecule number.</span>
+<span class="sd">       - **Parm nam** (:class:`str`):      Molecule name.</span>
+<span class="sd">       - **Parm atms** (:class:`Atom`):    List of atoms in the molecule.</span>
+<span class="sd">       - **Parm natm** (:class:`int`):     Number of atoms in the molecule</span>
+<span class="sd">       - **Parm head** (:class:`Atom`):    The head atom in the molecule. Used for connecting residues.</span>
+<span class="sd">       - **Parm tail** (:class:`Atom`):    The tail atom in the molecule. Used for connecting residues.</span>
+<span class="sd">       - **Parm pos** (:class:`str`):      The position of the molecule in a macromolecule (FIRST or LAST). Used for connecting residues.</span>
+<span class="sd">       - **Parm chainnum** (:class:`int`): Molecule chain number.</span>
+<span class="sd">       - **Parm chainnam** (:class:`str`): Molecule chain name</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       Initializing a :class:`Molecule` object with arguments is optional. It is possible to initialize a molecule object</span>
+<span class="sd">       by one or a list of atom object. Number of atoms (*natm*) is set automatically.</span>
+
+<span class="sd">       &gt;&gt;&gt; O  = Atom()</span>
+<span class="sd">       &gt;&gt;&gt; O4 = [Atom(num=1), Atom(num=2), Atom(num=3), Atom(num=4)]</span>
+<span class="sd">       &gt;&gt;&gt; molecule_O  = Molecule(num=1, atms=O)</span>
+<span class="sd">       &gt;&gt;&gt; molecule_O4 = Molecule(num=1, atms=O4)</span>
+<span class="sd">       &gt;&gt;&gt; for index, atom in enumerate(molecule_O4):</span>
+<span class="sd">       ...  print(index, &#39;-&#39;, atom.num)</span>
+<span class="sd">       0 - 1</span>
+<span class="sd">       1 - 2</span>
+<span class="sd">       2 - 3</span>
+<span class="sd">       3 - 4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">head</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chainnum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chainnam</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_natm</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chainnam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">chainnam</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chainnum</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">chainnum</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_head</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_atms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">head</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">head</span>
+        <span class="k">if</span> <span class="n">tail</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">tail</span>
+        <span class="k">if</span> <span class="n">atms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">addatm</span><span class="p">(</span><span class="n">atms</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atms</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">atom</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atms</span><span class="p">:</span> <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Molecule</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_num</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nam</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_nam</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_natm</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_natm</span><span class="p">)</span> <span class="ow">and</span> \
+                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_chainnam</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_chainnam</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_chainnum</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_chainnum</span><span class="p">)</span> <span class="ow">and</span> \
+                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atms</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_atms</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="Molecule.addatm"><a class="viewcode-back" href="../api.html#molecule.Molecule.addatm">[docs]</a>    <span class="k">def</span> <span class="nf">addatm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atm</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Appends atom(s) object to a molecule</span>
+
+<span class="sd">        &gt;&gt;&gt; H1, O = Atom(typ=&#39;H&#39;), Atom(typ=&#39;O&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; H2 = H1.copy</span>
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(num=1,nam=&#39;HOH&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; HOH.addatm(H1)</span>
+<span class="sd">        &gt;&gt;&gt; HOH.addatm(H2)</span>
+<span class="sd">        &gt;&gt;&gt; HOH.show</span>
+<span class="sd">        [1, &#39;HOH&#39;, 2]</span>
+<span class="sd">        &gt;&gt;&gt; HOH.addatm(O)</span>
+<span class="sd">        &gt;&gt;&gt; HOH.show</span>
+<span class="sd">        [1, &#39;HOH&#39;, 3]</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            *addatm* appends a hard copy of input variables.</span>
+
+<span class="sd">        &gt;&gt;&gt; H1 = Atom(num=1,typ=&#39;H&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; H2 = Atom(num=1,typ=&#39;H&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(num=1,nam=&#39;HH&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; HOH.addatm([H1, H2])</span>
+<span class="sd">        &gt;&gt;&gt; print([[atom.num, atom.typ] for atom in HOH])</span>
+<span class="sd">        [[1, &#39;H&#39;], [1, &#39;H&#39;]]</span>
+<span class="sd">        &gt;&gt;&gt; H1.num = 500</span>
+<span class="sd">        &gt;&gt;&gt; print([[atom.num, atom.typ] for atom in HOH])</span>
+<span class="sd">        [[1, &#39;H&#39;], [1, &#39;H&#39;]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">atm</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_atms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atm</span><span class="o">.</span><span class="n">copy</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_natm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_natm</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">atm</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">atm</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_atms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_natm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_natm</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;One element in the list is not Atom type&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Pass an Atom object&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets/Returns Molecule number.</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule()</span>
+<span class="sd">        &gt;&gt;&gt; HOH.num</span>
+<span class="sd">        0</span>
+<span class="sd">        &gt;&gt;&gt; HOH.num = 12</span>
+<span class="sd">        &gt;&gt;&gt; HOH.num</span>
+<span class="sd">        12</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num</span>
+
+    <span class="nd">@num</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Molecule number could not be converted to integer&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets/Returns Molecule number.</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule()</span>
+<span class="sd">        &gt;&gt;&gt; HOH.nam</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH.nam = &#39;HOH&#39;</span>
+<span class="sd">        &gt;&gt;&gt; HOH.nam</span>
+<span class="sd">        &#39;HOH&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span>
+
+    <span class="nd">@nam</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nam</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Molecule name could not be converted to str&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">natm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns number of atoms in a molecule.</span>
+
+<span class="sd">            &gt;&gt;&gt; O4 = [Atom(), Atom(), Atom(), Atom()]</span>
+<span class="sd">            &gt;&gt;&gt; molecule_O4 = Molecule(num=1, atms=O4)</span>
+<span class="sd">            &gt;&gt;&gt; molecule_O4.natm</span>
+<span class="sd">            4</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_natm</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns num, nam, natm.</span>
+
+<span class="sd">        &gt;&gt;&gt; H, O = Atom(typ=&#39;H&#39;), Atom(typ=&#39;O&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(num=1,nam=&#39;HOH&#39;, atms=[H, H, O])</span>
+<span class="sd">        &gt;&gt;&gt; HOH.show</span>
+<span class="sd">        [1, &#39;HOH&#39;, 3]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_natm</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Molecule.selectbyAtomnam"><a class="viewcode-back" href="../api.html#molecule.Molecule.selectbyAtomnam">[docs]</a>    <span class="k">def</span> <span class="nf">selectbyAtomnam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a :class:`Atom` or a list of :class:`Atom` with the given :class:`Atom.nam`. If only one :class:`Atom`,</span>
+<span class="sd">        was found and :class:`Atom` object is returned. Otherwise a list of :class:`Atom` objects is returned.</span>
+
+<span class="sd">        &gt;&gt;&gt; ATOMS = [Atom(nam=&#39;HC&#39;), Atom(nam=&#39;HC&#39;), Atom(nam=&#39;O&#39;)]</span>
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(num=1, nam=&#39;HOH&#39;, atms=ATOMS)</span>
+<span class="sd">        &gt;&gt;&gt; select = HOH.selectbyAtomnam(&#39;HC&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; [atom.show for atom in select]</span>
+<span class="sd">        [[0, &#39;HC&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;], [0, &#39;HC&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">nam</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="s2">&quot;If only one atom found returns the Atom&quot;</span>
+            <span class="k">return</span> <span class="n">select</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="s2">&quot; Return a list&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">select</span></div>
+
+<div class="viewcode-block" id="Molecule.selectbyAtomnum"><a class="viewcode-back" href="../api.html#molecule.Molecule.selectbyAtomnum">[docs]</a>    <span class="k">def</span> <span class="nf">selectbyAtomnum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a :class:`Atom` or a list of :class:`Atom` with the given :class:`Atom.num`. If only one :class:`Atom`,</span>
+<span class="sd">        was found and :class:`Atom` object is returned. Otherwise a list of :class:`Atom` objects is returned.</span>
+
+<span class="sd">        &gt;&gt;&gt; ATOMS = [Atom(num=1), Atom(num=2), Atom(num=3)]</span>
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(num=1, nam=&#39;HOH&#39;, atms=ATOMS)</span>
+<span class="sd">        &gt;&gt;&gt; select = HOH.selectbyAtomnum(1)</span>
+<span class="sd">        &gt;&gt;&gt; select.show</span>
+<span class="sd">        [1, &#39;ND&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">num</span> <span class="o">==</span> <span class="n">number</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">select</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">select</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets/Returns Molecule head atom. The :class:`Molecule.head` accepts an :class:`Atom`, a *str*, or an *int*. If</span>
+<span class="sd">        an :class:`Atom` object is given, it should exist in the molecule otherwise a ValueError is raised.</span>
+<span class="sd">        If a *str* or an *int* is given, the atoms in the molecule are searched for a unique match and</span>
+<span class="sd">        :class:`Molecule.head` points to that. If multiple values was found an ValueError exception is raised.</span>
+
+<span class="sd">        &gt;&gt;&gt; ATOMS = [Atom(num=1, nam=&#39;H1&#39;), Atom(num=2, nam=&#39;H2&#39;), Atom(num=3, nam=&#39;O&#39;)]</span>
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(num=1, nam=&#39;HOH&#39;, atms=ATOMS)</span>
+<span class="sd">        &gt;&gt;&gt; print(HOH.head)</span>
+<span class="sd">        None</span>
+<span class="sd">        &gt;&gt;&gt; HOH.head = HOH.selectbyAtomnum(1)</span>
+<span class="sd">        &gt;&gt;&gt; HOH.head.show</span>
+<span class="sd">        [1, &#39;H1&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; print((HOH.head) is HOH.selectbyAtomnum(1))</span>
+<span class="sd">        True</span>
+
+<span class="sd">        Here the head function tries to find an :class:`Atom` that is equal to the input and assigns the head to that.</span>
+<span class="sd">        In other word, the head :class:`Atom` always points to an atom that belongs to the molecule, even if, the input</span>
+<span class="sd">        :class:`Atom` does not belong to the molecule.</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH.head = ATOMS[0]</span>
+<span class="sd">        &gt;&gt;&gt; print((HOH.head) is HOH.selectbyAtomnum(1))</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; print(HOH.head == ATOMS[0])</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; print(HOH.head is ATOMS[0])</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; HOH.head = &#39;H2&#39;</span>
+<span class="sd">        &gt;&gt;&gt; HOH.head.show</span>
+<span class="sd">        [2, &#39;H2&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; HOH.head = 3</span>
+<span class="sd">        &gt;&gt;&gt; HOH.head.show</span>
+<span class="sd">        [3, &#39;O&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; try:</span>
+<span class="sd">        ...     HOH.head = 23</span>
+<span class="sd">        ... except Exception as error:</span>
+<span class="sd">        ...     print(error)</span>
+<span class="sd">        The input Atom number either was not found or has multiple occurrences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_head</span>
+
+    <span class="nd">@head</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headAtom</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">headAtom</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">atom</span> <span class="o">==</span> <span class="n">headAtom</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_head</span> <span class="o">=</span> <span class="n">select</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input Atom either was not found or has multiple occurrences&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">headAtom</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectbyAtomnam</span><span class="p">(</span><span class="n">headAtom</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_head</span> <span class="o">=</span> <span class="n">select</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input Atom name either was not found or has multiple occurrences&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">headAtom</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="n">headAtom</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_head</span> <span class="o">=</span> <span class="n">select</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input Atom number either was not found or has multiple occurrences&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input should be either Atom, str, or int&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets/Returns Molecule tail atom. The :class:`Molecule.tail` accepts an :class:`Atom`, a *str*, or an *int*. If</span>
+<span class="sd">        an :class:`Atom` object is given, it should exist in the molecule otherwise a ValueError is raised (see :class:`Molecule.head`).</span>
+<span class="sd">        If a *str* or an *int* is given, the atoms in the molecule are searched for a unique match and</span>
+<span class="sd">        :class:`Molecule.head` points to that. If multiple values was found an ValueError exception is raised.</span>
+
+<span class="sd">        &gt;&gt;&gt; ATOMS = [Atom(num=1, nam=&#39;H1&#39;), Atom(num=2, nam=&#39;H2&#39;), Atom(num=3, nam=&#39;O&#39;)]</span>
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(num=1, nam=&#39;HOH&#39;, atms=ATOMS)</span>
+<span class="sd">        &gt;&gt;&gt; print(HOH.tail)</span>
+<span class="sd">        None</span>
+<span class="sd">        &gt;&gt;&gt; HOH.tail = HOH.selectbyAtomnum(1)</span>
+<span class="sd">        &gt;&gt;&gt; HOH.tail.show</span>
+<span class="sd">        [1, &#39;H1&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; HOH.tail = &#39;H2&#39;</span>
+<span class="sd">        &gt;&gt;&gt; HOH.tail.show</span>
+<span class="sd">        [2, &#39;H2&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; HOH.tail = 3</span>
+<span class="sd">        &gt;&gt;&gt; HOH.tail.show</span>
+<span class="sd">        [3, &#39;O&#39;, 0.0, 0.0, 0.0, &#39;ND&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; try:</span>
+<span class="sd">        ...     HOH.tail = 23</span>
+<span class="sd">        ... except Exception as error:</span>
+<span class="sd">        ...     print(error)</span>
+<span class="sd">        The input Atom number either was not found or has multiple occurrences</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span>
+
+    <span class="nd">@tail</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tailAtom</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tailAtom</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">atom</span> <span class="o">==</span> <span class="n">tailAtom</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="n">tailAtom</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input Atom should belong to the current Molecule&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">tailAtom</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectbyAtomnam</span><span class="p">(</span><span class="n">tailAtom</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="n">select</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input Atom name either was not found or has multiple occurrences&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">tailAtom</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+
+            <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="n">tailAtom</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Atom</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="n">select</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The input Atom number either was not found or has multiple occurrences&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input should be either Atom, str, or int&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a deepcopy of :class:`Molecule` object.</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH1 = Molecule(num=1, nam=&#39;HOH&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; HOH2 = HOH1.copy</span>
+<span class="sd">        &gt;&gt;&gt; HOH2.show</span>
+<span class="sd">        [1, &#39;HOH&#39;, 0]</span>
+<span class="sd">        &gt;&gt;&gt; HOH2.num = 2</span>
+<span class="sd">        &gt;&gt;&gt; HOH2.show</span>
+<span class="sd">        [2, &#39;HOH&#39;, 0]</span>
+<span class="sd">        &gt;&gt;&gt; HOH1.show</span>
+<span class="sd">        [1, &#39;HOH&#39;, 0]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets/Returns the position of the molecule in a :class:`Macromolecule`. Could be set to &quot;FIRST&quot; or &quot;LAST&quot; for</span>
+<span class="sd">        first or last residue in a chain.</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule(Atom(num=1), Atom(num=2), Atom(num=3))</span>
+<span class="sd">        &gt;&gt;&gt; HOH.pos</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; HOH.pos = &#39;FIRST&#39;</span>
+<span class="sd">        &gt;&gt;&gt; if HOH.pos is &#39;FIRST&#39;: print(&#39;First residue&#39;)</span>
+<span class="sd">        First residue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
+
+    <span class="nd">@pos</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Molecule position could not be converted to string&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chainnam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns/Sets chain name that molecule belongs to.</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule()</span>
+<span class="sd">        &gt;&gt;&gt; HOH.chainnam</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; HOH.chainnam = &#39;A&#39;</span>
+<span class="sd">        &gt;&gt;&gt; HOH.chainnam</span>
+<span class="sd">        &#39;A&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chainnam</span>
+
+    <span class="nd">@chainnam</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">chainnam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chainName</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_chainnam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">chainName</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Molecule chain name could not be converted to string&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chainnum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns/Sets chain number that molecule belongs to.</span>
+
+<span class="sd">        &gt;&gt;&gt; HOH = Molecule()</span>
+<span class="sd">        &gt;&gt;&gt; HOH.chainnum</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; HOH.chainnum = 10</span>
+<span class="sd">        &gt;&gt;&gt; HOH.chainnum</span>
+<span class="sd">        10</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chainnum</span>
+
+    <span class="nd">@chainnum</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">chainnum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chainNumber</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_chainnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chainNumber</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Molecule chain number could not be converted to integer&quot;</span><span class="p">)</span></div>
+
+
+<span class="s2">&quot;An example of class usage&quot;</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">mol1</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)])</span>
+    <span class="n">mol2</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;PTP&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)])</span>
+    <span class="n">mol3</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;HOH&#39;</span><span class="p">,</span> <span class="n">atms</span><span class="o">=</span><span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H1&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H2&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">mol1</span> <span class="o">==</span> <span class="n">mol2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mol1</span> <span class="ow">is</span> <span class="n">mol2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mol1</span> <span class="o">==</span> <span class="n">mol3</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mol1</span> <span class="ow">is</span> <span class="n">mol3</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mol1</span><span class="o">.</span><span class="n">selectbyAtomnum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">atom</span><span class="p">),</span> <span class="nb">id</span><span class="p">(</span><span class="n">atom</span><span class="p">),</span> <span class="n">atom</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Masoud Kazemi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

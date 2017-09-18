@@ -1,0 +1,295 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>atom &#8212; QMcaspian 1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for atom</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: atom</span>
+<span class="sd">   :platform: Unix</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../api.html#atom.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to store the coordinates (x,y,z) and other atom properties.</span>
+
+<span class="sd">       - **Parm num** (:class:`int`):      Atom number.</span>
+<span class="sd">       - **Parm nam** (:class:`int`):      Atom name.</span>
+<span class="sd">       - **Parm x** (:class:`float`):        Atom x coordinate.</span>
+<span class="sd">       - **Parm y** (:class:`float`):        Atom y coordinate.</span>
+<span class="sd">       - **Parm z** (:class:`float`):        Atom name.</span>
+<span class="sd">       - **Parm typ** (:class:`Atom`):     Atom type (element)</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       Initializing an :class:`Atom` object with arguments is optional.</span>
+
+<span class="sd">       &gt;&gt;&gt; O = Atom(121, &#39;OH&#39;, 13.015, 20.145, 21.457, &#39;O&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="s2">&quot;tolerance value for float comparison&quot;</span>
+    <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1E-5</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;ND&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;ND&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">           num (int): atom number</span>
+<span class="sd">           x (float): x coordinate</span>
+<span class="sd">           y (float): y coordinate</span>
+<span class="sd">           z (float): z coordinate</span>
+<span class="sd">           typ (string): atom type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_typ</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Atom</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_num</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nam</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_nam</span><span class="p">)</span> <span class="ow">and</span> \
+                   <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">_x</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">Atom</span><span class="o">.</span><span class="n">tolerance</span><span class="p">)</span> <span class="ow">and</span>             \
+                   <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">_y</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">Atom</span><span class="o">.</span><span class="n">tolerance</span><span class="p">)</span> <span class="ow">and</span>             \
+                   <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">_z</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">Atom</span><span class="o">.</span><span class="n">tolerance</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_typ</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_typ</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Sets/Returns coordinates.</span>
+
+<span class="sd">            &gt;&gt;&gt; O = Atom()</span>
+<span class="sd">            &gt;&gt;&gt; O.cord = [3.015, 20.145, 21.457]</span>
+<span class="sd">            &gt;&gt;&gt; x, y, z = O.cord</span>
+<span class="sd">            &gt;&gt;&gt; print(x,y,z)</span>
+<span class="sd">            3.015 20.145 21.457</span>
+<span class="sd">            &gt;&gt;&gt; O.cord = [13.000, 20.145, 21.457]</span>
+<span class="sd">            &gt;&gt;&gt; O.cord</span>
+<span class="sd">            [13.0, 20.145, 21.457]</span>
+<span class="sd">            &gt;&gt;&gt; xyz = O.cord</span>
+<span class="sd">            &gt;&gt;&gt; xyz</span>
+<span class="sd">            [13.0, 20.145, 21.457]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">]</span>
+
+    <span class="nd">@cord</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">cord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cord</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cord</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">cord</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">cord</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Pass a list of [x, y, z] coordinates&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Sets/Returns atom number.</span>
+
+<span class="sd">            &gt;&gt;&gt; O = Atom()</span>
+<span class="sd">            &gt;&gt;&gt; O.num</span>
+<span class="sd">            0</span>
+<span class="sd">            &gt;&gt;&gt; O.num = &#39;10&#39;</span>
+<span class="sd">            &gt;&gt;&gt; O.num</span>
+<span class="sd">            10</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num</span>
+
+    <span class="nd">@num</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Atom number could not be converted to integer&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Sets/Returns atom name.</span>
+
+<span class="sd">            &gt;&gt;&gt; O = Atom()</span>
+<span class="sd">            &gt;&gt;&gt; O.nam</span>
+<span class="sd">            &#39;ND&#39;</span>
+<span class="sd">            &gt;&gt;&gt; O.nam = &#39;OG&#39;</span>
+<span class="sd">            &gt;&gt;&gt; O.nam</span>
+<span class="sd">            &#39;OG&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span>
+
+    <span class="nd">@nam</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nam</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Atom name could not be converted to string&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">typ</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Sets/Returns atom type.</span>
+
+<span class="sd">            &gt;&gt;&gt; O = Atom()</span>
+<span class="sd">            &gt;&gt;&gt; O.typ</span>
+<span class="sd">            &#39;ND&#39;</span>
+<span class="sd">            &gt;&gt;&gt; O.typ = &#39;O&#39;</span>
+<span class="sd">            &gt;&gt;&gt; O.typ</span>
+<span class="sd">            &#39;O&#39;</span>
+<span class="sd">            &gt;&gt;&gt; print(O.typ)</span>
+<span class="sd">            O</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typ</span>
+
+    <span class="nd">@typ</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">typ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_typ</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Atom type could not be converted to string&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Returns num, nam, x, y, z, typ.</span>
+
+<span class="sd">            &gt;&gt;&gt; O = Atom(num=121, x=13.015, y=20.145, z=21.457, typ=&#39;O&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; O.show</span>
+<span class="sd">            [121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typ</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Returns a deepcopy of Atom object.</span>
+
+<span class="sd">            &gt;&gt;&gt; O = Atom(num=121, x=13.015, y=20.145, z=21.457, typ=&#39;O&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; H = O.copy</span>
+<span class="sd">            &gt;&gt;&gt; O.show</span>
+<span class="sd">            [121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; H.show</span>
+<span class="sd">            [121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; H = Atom(num=12, x=13.015, y=20.145, z=21.457, typ=&#39;H&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; O.show</span>
+<span class="sd">            [121, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;O&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; H.show</span>
+<span class="sd">            [12, &#39;ND&#39;, 13.015, 20.145, 21.457, &#39;H&#39;]</span>
+
+<span class="sd">            .. Note::</span>
+<span class="sd">                A variable assignment only creates another link to the same object. If you wish to create a new</span>
+<span class="sd">                object, use *copy* function.</span>
+
+<span class="sd">            &gt;&gt;&gt; H = Atom(num=1,typ=&#39;H&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; O = H</span>
+<span class="sd">            &gt;&gt;&gt; O.typ = &#39;O&#39;</span>
+<span class="sd">            &gt;&gt;&gt; O.num = 2</span>
+<span class="sd">            &gt;&gt;&gt; H.show</span>
+<span class="sd">            [2, &#39;ND&#39;, 0.0, 0.0, 0.0, &#39;O&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<span class="s2">&quot; An example of Atom class usage&quot;</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">O1</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">121</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;13.015&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+    <span class="n">O2</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">121</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+    <span class="n">H2</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">122</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">)</span>
+    <span class="n">ATOMS</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">121</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">),</span>
+             <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">122</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">)]</span>
+    <span class="n">ATOMS2</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">121</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;O1&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">),</span>
+              <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">122</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">13.015</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">20.145</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">21.457</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">O1</span> <span class="o">==</span> <span class="n">O2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">O1</span> <span class="ow">is</span> <span class="n">O2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">O1</span> <span class="ow">in</span> <span class="n">ATOMS</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">O1</span> <span class="o">==</span> <span class="n">H2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ATOMS</span> <span class="o">==</span> <span class="n">ATOMS2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ATOMS</span> <span class="ow">is</span> <span class="n">ATOMS2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">O1</span><span class="o">.</span><span class="n">cord</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Masoud Kazemi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

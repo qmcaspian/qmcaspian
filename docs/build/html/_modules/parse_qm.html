@@ -1,0 +1,265 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>parse_qm &#8212; QMcaspian 1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for parse_qm</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+
+<span class="kn">from</span> <span class="nn">atom</span> <span class="k">import</span> <span class="n">Atom</span>
+<span class="kn">from</span> <span class="nn">molecule</span> <span class="k">import</span> <span class="n">Molecule</span>
+<span class="kn">from</span> <span class="nn">macromolecule</span> <span class="k">import</span> <span class="n">Macromolecule</span>
+<span class="kn">from</span> <span class="nn">atom_table</span> <span class="k">import</span> <span class="n">atom_property</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="c1"># TODO</span>
+<span class="c1"># Random access by structure number, including an option for accessing the last element</span>
+
+
+<div class="viewcode-block" id="parseQM"><a class="viewcode-back" href="../api.html#parse_qm.parseQM">[docs]</a><span class="k">def</span> <span class="nf">parseQM</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">program</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a warper function for classes that parse the QM calculations output files</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">program</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
+        <span class="n">resutls</span> <span class="o">=</span> <span class="n">ParseGaussian</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">resutls</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">resutls</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ParseGaussian"><a class="viewcode-back" href="../api.html#parse_qm.ParseGaussian">[docs]</a><span class="k">class</span> <span class="nc">ParseGaussian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class reads the header section of a Gaussian output and initiate a corresponding parser class.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\sopt&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">OptG09</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\sfrq&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;not implemented yet&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span>
+
+<div class="viewcode-block" id="ParseGaussian.getheader"><a class="viewcode-back" href="../api.html#parse_qm.ParseGaussian.getheader">[docs]</a>    <span class="k">def</span> <span class="nf">getheader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks input file header for Gaussian version and command line options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Input/Output error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+
+        <span class="n">version_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">method_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">line_1</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s\*+\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_1</span><span class="p">))</span> <span class="ow">and</span> <span class="s1">&#39;Gaussian&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">version_found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">version_found</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s-+\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_1</span><span class="p">)):</span>
+                <span class="n">method_found</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">method_found</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\s-+\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)))</span> <span class="ow">or</span> <span class="s1">&#39;Leave Link    1&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">method_found</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">line_1</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method_found</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No header section was found in &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ifile</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="OptG09"><a class="viewcode-back" href="../api.html#parse_qm.OptG09">[docs]</a><span class="k">class</span> <span class="nc">OptG09</span><span class="p">(</span><span class="n">Macromolecule</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to read and save G09 optimization output. This class inherits from :class:`Macromolecule`.</span>
+<span class="sd">    This class assumes the given file exists and is G09 optimization output. Use the :class:`ParseGaussian` if error</span>
+<span class="sd">    management is needed.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">):</span>
+        <span class="n">Macromolecule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="n">ifile</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foundStructure</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">multiplicity</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0000</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxForce</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0000</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">averageForce</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0000</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxDisplacement</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0000</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">averageDisplacement</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0000</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_opt_g09</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OptG09.parse_opt_g09"><a class="viewcode-back" href="../api.html#parse_qm.OptG09.parse_opt_g09">[docs]</a>    <span class="k">def</span> <span class="nf">parse_opt_g09</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># The variables to cash two previous lines</span>
+            <span class="n">line_2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">line_1</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="c1"># Keep track of structure numbers</span>
+            <span class="n">imolnum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Read flag</span>
+            <span class="n">geometry_found</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sNumber\s+Number\s+Type\s+X\s+Y\s+Z\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_2</span><span class="p">))</span> <span class="ow">and</span> \
+                        <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s-+\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_1</span><span class="p">)):</span>
+                    <span class="n">geometry_found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">foundStructure</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">imolnum</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">addmol</span><span class="p">(</span><span class="n">Molecule</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">imolnum</span><span class="p">))</span>
+                    <span class="n">imol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectbyMolnum</span><span class="p">(</span><span class="n">imolnum</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s-+\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">))</span> <span class="ow">and</span> <span class="n">geometry_found</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">geometry_found</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="n">geometry_found</span><span class="p">:</span>
+                    <span class="n">inum</span><span class="p">,</span> <span class="n">inam</span><span class="p">,</span> <span class="n">dummy</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iz</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">imol</span><span class="o">.</span><span class="n">addatm</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">inum</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="n">atom_property</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">inam</span><span class="p">)),</span> <span class="n">x</span><span class="o">=</span><span class="n">ix</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">iy</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">iz</span><span class="p">,</span> <span class="p">))</span>
+
+                <span class="c1"># Read energies</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sSCF\s+Done&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">4</span><span class="p">]))</span>
+
+                <span class="c1"># Read Max Force</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sMaximum Force\s+&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">maxForce</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]))</span>
+
+                <span class="c1"># Read average Force</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sRMS     Force\s+&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">averageForce</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]))</span>
+
+                <span class="c1"># Read Max Displacement</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sMaximum Displacement\s+&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">maxDisplacement</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]))</span>
+
+                <span class="c1"># Read average Displacement</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sRMS     Displacement\s+&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">averageDisplacement</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]))</span>
+
+                <span class="c1"># Convergence flag</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sOptimization\s+completed&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># Read Charge and multiplicity</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Charge =&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">))</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Multiplicity =&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">multiplicity</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">5</span><span class="p">]</span>
+
+                <span class="c1"># Update the cash lines -2 and -1</span>
+                <span class="n">line_2</span> <span class="o">=</span> <span class="n">line_1</span>
+                <span class="n">line_1</span> <span class="o">=</span> <span class="n">line</span>
+
+            <span class="c1"># Check any structure was found in the file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">foundStructure</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No Structure was found in the &quot;</span> <span class="o">+</span> <span class="n">ifile</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmol</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning, only one structure was found. Optimization doesnt seem to proceeded.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Push the lists by one element to match the numbering of the structures</span>
+            <span class="c1"># First structure is the initial structure</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxForce</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxForce</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">averageForce</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">averageForce</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxDisplacement</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxDisplacement</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">averageDisplacement</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">averageDisplacement</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
+
+
+<span class="s2">&quot; An example of class usage&quot;</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">parseQM</span><span class="p">(</span><span class="s1">&#39;int1_EOAwWAT.log&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QMcaspian 1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Masoud Kazemi.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>
