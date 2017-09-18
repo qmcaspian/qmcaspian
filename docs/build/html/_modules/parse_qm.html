@@ -54,9 +54,6 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="c1"># TODO</span>
-<span class="c1"># Random access by structure number, including an option for accessing the last element</span>
-
 
 <div class="viewcode-block" id="parseQM"><a class="viewcode-back" href="../api.html#parse_qm.parseQM">[docs]</a><span class="k">def</span> <span class="nf">parseQM</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">program</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -71,12 +68,14 @@
 
     <span class="k">return</span> <span class="n">resutls</span><span class="p">()</span></div>
 
+
 <div class="viewcode-block" id="ParseGaussian"><a class="viewcode-back" href="../api.html#parse_qm.ParseGaussian">[docs]</a><span class="k">class</span> <span class="nc">ParseGaussian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class reads the header section of a Gaussian output and initiate a corresponding parser class.</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -169,7 +168,9 @@
 
                 <span class="k">if</span> <span class="n">geometry_found</span><span class="p">:</span>
                     <span class="n">inum</span><span class="p">,</span> <span class="n">inam</span><span class="p">,</span> <span class="n">dummy</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iz</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                    <span class="n">imol</span><span class="o">.</span><span class="n">addatm</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">inum</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="n">atom_property</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">inam</span><span class="p">)),</span> <span class="n">x</span><span class="o">=</span><span class="n">ix</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">iy</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">iz</span><span class="p">,</span> <span class="p">))</span>
+                    <span class="n">imol</span><span class="o">.</span><span class="n">addatm</span><span class="p">(</span>
+                        <span class="n">Atom</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="n">inum</span><span class="p">,</span> <span class="n">nam</span><span class="o">=</span><span class="n">atom_property</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;symbol&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">inam</span><span class="p">)),</span> <span class="n">x</span><span class="o">=</span><span class="n">ix</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">iy</span><span class="p">,</span>
+                             <span class="n">z</span><span class="o">=</span><span class="n">iz</span><span class="p">,</span> <span class="p">))</span>
 
                 <span class="c1"># Read energies</span>
                 <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sSCF\s+Done&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
