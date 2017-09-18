@@ -10,16 +10,16 @@ import re
 
 def parseQM(ifile, program):
     """
-    This is a warper function for classes that parse the QM calculations output files
+    This is a wrapper function for classes that parse the QM calculations output files
 
 
     """
     if program == 'G':
-        resutls = ParseGaussian(ifile)
+        results = ParseGaussian(ifile)
     else:
-        resutls = None
+        results = None
 
-    return resutls()
+    return results()
 
 
 class ParseGaussian(object):
