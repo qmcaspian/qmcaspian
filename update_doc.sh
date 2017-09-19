@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Taken from
+# http://www.willmcginnis.com/2016/02/29/automating-documentation-workflow-with-sphinx-and-github-pages/
 # build the docs
 cd docs
 make clean
