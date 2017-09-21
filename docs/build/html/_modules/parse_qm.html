@@ -57,16 +57,16 @@
 
 <div class="viewcode-block" id="parseQM"><a class="viewcode-back" href="../api.html#parse_qm.parseQM">[docs]</a><span class="k">def</span> <span class="nf">parseQM</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">program</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This is a warper function for classes that parse the QM calculations output files</span>
+<span class="sd">    This is a wrapper function for classes that parse the QM calculations output files</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">program</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
-        <span class="n">resutls</span> <span class="o">=</span> <span class="n">ParseGaussian</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">ParseGaussian</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">resutls</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">return</span> <span class="n">resutls</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">results</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ParseGaussian"><a class="viewcode-back" href="../api.html#parse_qm.ParseGaussian">[docs]</a><span class="k">class</span> <span class="nc">ParseGaussian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
