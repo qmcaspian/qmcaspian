@@ -55,13 +55,15 @@ def fh_correction():
     else:
         print("Structure " + str(structure_num) + " is used for input generation.")
 
+    # select the output molecule
+    imol = opt.selectbyMolnum(structure_num)
 
     # Write the frq
     out_filename = ifile.split('.')[0] + '_frq.inp'
     out_f = open(out_filename, 'w')
     out_f.write('%nprocshared=16\n' + '%mem=16GB\n' + '#p freq b3lyp/6-31g(d,p) empiricaldispersion=gd3\n')
     out_f.write(' \n' + 'Title Card Required\n' + ' \n' + str(opt.charge) + '  ' + str(opt.multiplicity) + '\n')
-    for atom in opt.selectbyMolnum(structure_num):
+    for atom in imol:
         out_f.write('%2s     %10f   %10f   %10f \n' % (atom.nam, atom.cord[0], atom.cord[1], atom.cord[2]))
     out_f.write(' \n' + ' \n')
     out_f.close()
@@ -71,7 +73,7 @@ def fh_correction():
     out_f = open(out_filename, 'w')
     out_f.write('%nprocshared=16\n' + '%mem=16GB\n' + '#p b3lyp/6-311+g(2d,2p) empiricaldispersion=gd3\n')
     out_f.write(' \n' + 'Title Card Required\n' + ' \n' + str(opt.charge) + '  ' + str(opt.multiplicity) + '\n')
-    for atom in opt.selectbyMolnum(structure_num):
+    for atom in imol:
         out_f.write('%2s     %10f   %10f   %10f \n' % (atom.nam, atom.cord[0], atom.cord[1], atom.cord[2]))
     out_f.write(' \n' + ' \n')
     out_f.close()
@@ -81,7 +83,7 @@ def fh_correction():
     out_f = open(out_filename, 'w')
     out_f.write('%nprocshared=16\n' + '%mem=16GB\n' + '#p b3lyp/6-31g(d,p) scrf=(solvent=water,read,smd) empiricaldispersion=gd3\n')
     out_f.write(' \n' + 'Title Card Required\n' + ' \n' + str(opt.charge) + '  ' + str(opt.multiplicity) + '\n')
-    for atom in opt.selectbyMolnum(structure_num):
+    for atom in imol:
         out_f.write('%2s     %10f   %10f   %10f \n' % (atom.nam, atom.cord[0], atom.cord[1], atom.cord[2]))
     out_f.write(' \n')
     out_f.write('eps=4')
@@ -89,11 +91,11 @@ def fh_correction():
     out_f.close()
 
     # Write the xyz file
-    out_filename = ifile.split('.')[0] + '.xyz'
+    out_filename = ifile.split('.')[0] + '-' + str(structure_num) + '.xyz'
     out_f = open(out_filename, 'w')
-    out_f.write('   ' + str(opt.selectbyMolnum(structure_num).natm) + '\n')
-    out_f.write( ifile.split('.')[0] + ' energy: ' + str(opt.energy[structure_num - 1]) + '\n')
-    for atom in opt.selectbyMolnum(structure_num):
+    out_f.write('   ' + str(imol.natm) + '\n')
+    out_f.write(ifile.split('.')[0] + 'fram: ' + str(structure_num) + ' energy: ' + str(opt.energy[structure_num - 1]) + '\n')
+    for atom in imol:
         out_f.write('%2s     %10f   %10f   %10f \n' % (atom.nam, atom.cord[0], atom.cord[1], atom.cord[2]))
     out_f.write(' \n')
     out_f.close()
