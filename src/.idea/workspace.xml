@@ -61,8 +61,8 @@
       <file leaf-file-name="parse_qm.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/parse_qm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2772">
-              <caret line="159" column="0" lean-forward="false" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
+            <state relative-caret-position="250">
+              <caret line="114" column="77" lean-forward="false" selection-start-line="114" selection-start-column="77" selection-end-line="114" selection-end-column="77" />
               <folding>
                 <element signature="e#19#40#0" expanded="true" />
               </folding>
@@ -73,8 +73,8 @@
       <file leaf-file-name="fh_correction.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../scripts/fh_correction.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1080">
-              <caret line="105" column="0" lean-forward="true" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+            <state relative-caret-position="270">
+              <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
               <folding>
                 <element signature="e#24#39#0" expanded="true" />
               </folding>
@@ -105,16 +105,16 @@
         <option value="$PROJECT_DIR$/molecule.py" />
         <option value="$PROJECT_DIR$/macromolecule.py" />
         <option value="$PROJECT_DIR$/atom_table.py" />
-        <option value="$PROJECT_DIR$/parse_qm.py" />
         <option value="$PROJECT_DIR$/../scripts/fh_correction.py" />
+        <option value="$PROJECT_DIR$/parse_qm.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-1" />
     <option name="y" value="-1" />
-    <option name="width" value="2562" />
-    <option name="height" value="1421" />
+    <option name="width" value="2560" />
+    <option name="height" value="1416" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -151,7 +151,6 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -184,6 +183,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -202,7 +202,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Doctest atom_table">
+  <component name="RunManager" selected="Python.parse_qm">
     <configuration default="false" name="macromolecule" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -553,9 +553,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.fh_correction" />
-        <item index="1" class="java.lang.String" itemvalue="Python.macromolecule" />
-        <item index="2" class="java.lang.String" itemvalue="Python.parse_qm" />
+        <item index="0" class="java.lang.String" itemvalue="Python.parse_qm" />
+        <item index="1" class="java.lang.String" itemvalue="Python.fh_correction" />
+        <item index="2" class="java.lang.String" itemvalue="Python.macromolecule" />
         <item index="3" class="java.lang.String" itemvalue="Python tests.Doctest atom_property" />
         <item index="4" class="java.lang.String" itemvalue="Python tests.Doctests in atom" />
       </list>
@@ -638,12 +638,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="-1" width="2562" height="1421" extended-state="6" />
+    <frame x="-1" y="-1" width="2560" height="1416" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17460938" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34422493" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3688213" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36854103" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1022,8 +1023,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/parse_qm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2772">
-          <caret line="159" column="0" lean-forward="false" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
+        <state relative-caret-position="250">
+          <caret line="114" column="77" lean-forward="false" selection-start-line="114" selection-start-column="77" selection-end-line="114" selection-end-column="77" />
           <folding>
             <element signature="e#19#40#0" expanded="true" />
           </folding>
@@ -1032,8 +1033,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../scripts/fh_correction.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1080">
-          <caret line="105" column="0" lean-forward="true" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+        <state relative-caret-position="270">
+          <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
           <folding>
             <element signature="e#24#39#0" expanded="true" />
           </folding>

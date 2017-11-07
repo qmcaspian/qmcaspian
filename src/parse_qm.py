@@ -99,7 +99,10 @@ class OptG09(Macromolecule):
 
     def parse_opt_g09(self, ifile):
         with open(ifile, mode='r') as f:
-            # The variables to cash two previous lines
+            # The variables to cash previous lines
+            line_5 = ""
+            line_4 = ""
+            line_3 = ""
             line_2 = ""
             line_1 = ""
             # Keep track of structure numbers
@@ -109,7 +112,7 @@ class OptG09(Macromolecule):
 
             for line in f:
                 if re.match(r'^\sNumber\s+Number\s+Type\s+X\s+Y\s+Z\n$', str(line_2)) and \
-                        re.match(r'\s-+\n$', str(line_1)):
+                        re.match(r'\s-+\n$', str(line_1)) and re.match(r'\s*Standard\sorientation:\s*\n$', str(line_5)):
                     geometry_found = True
                     self.foundStructure = True
                     imolnum += 1
@@ -155,6 +158,9 @@ class OptG09(Macromolecule):
                     self.multiplicity = line.split()[5]
 
                 # Update the cash lines -2 and -1
+                line_5 = line_4
+                line_4 = line_3
+                line_3 = line_2
                 line_2 = line_1
                 line_1 = line
 
@@ -175,5 +181,5 @@ class OptG09(Macromolecule):
 
 " An example of class usage"
 if __name__ == '__main__':
-    a = parseQM('int1_EOAwWAT.log', 'G')
+    a = parseQM('pna.log~', 'G')
     print(a.show)
