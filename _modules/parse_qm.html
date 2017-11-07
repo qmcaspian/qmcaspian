@@ -146,7 +146,10 @@
 
 <div class="viewcode-block" id="OptG09.parse_opt_g09"><a class="viewcode-back" href="../api.html#parse_qm.OptG09.parse_opt_g09">[docs]</a>    <span class="k">def</span> <span class="nf">parse_opt_g09</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="c1"># The variables to cash two previous lines</span>
+            <span class="c1"># The variables to cash previous lines</span>
+            <span class="n">line_5</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">line_4</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">line_3</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="n">line_2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="n">line_1</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="c1"># Keep track of structure numbers</span>
@@ -156,7 +159,7 @@
 
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\sNumber\s+Number\s+Type\s+X\s+Y\s+Z\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_2</span><span class="p">))</span> <span class="ow">and</span> \
-                        <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s-+\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_1</span><span class="p">)):</span>
+                        <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s-+\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_1</span><span class="p">))</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*Standard\sorientation:\s*\n$&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">line_5</span><span class="p">)):</span>
                     <span class="n">geometry_found</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">foundStructure</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="n">imolnum</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -202,6 +205,9 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">multiplicity</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">5</span><span class="p">]</span>
 
                 <span class="c1"># Update the cash lines -2 and -1</span>
+                <span class="n">line_5</span> <span class="o">=</span> <span class="n">line_4</span>
+                <span class="n">line_4</span> <span class="o">=</span> <span class="n">line_3</span>
+                <span class="n">line_3</span> <span class="o">=</span> <span class="n">line_2</span>
                 <span class="n">line_2</span> <span class="o">=</span> <span class="n">line_1</span>
                 <span class="n">line_1</span> <span class="o">=</span> <span class="n">line</span>
 
@@ -222,7 +228,7 @@
 
 <span class="s2">&quot; An example of class usage&quot;</span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">parseQM</span><span class="p">(</span><span class="s1">&#39;int1_EOAwWAT.log&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">parseQM</span><span class="p">(</span><span class="s1">&#39;pna.log~&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
 </pre></div>
 
