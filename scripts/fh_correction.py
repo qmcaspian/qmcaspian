@@ -13,18 +13,18 @@ def fh_correction():
 
         export the library directories to PYTHONPATH. In my case it is
 
-        **>>> export PYTHONPATH=$PYTHONPATH:/home/masoud/QMcaspian/src/**
+        **>>> export PYTHONPATH=$PYTHONPATH:/home/masoud/qmcaspian/src/**
 
         export the scripts directory to PATH
 
-        **>>> export PATH=$PATH:/home/masoud/QMcaspian/scripts/**
+        **>>> export PATH=$PATH:/home/masoud/qmcaspian/scripts/**
 
     * How to use:
 
         *>>> fh_correction.py [-n (int) (structure number to be used)] <inputfile>*
 
     """
-    # Structure number to be used for generation of the input files
+    # Structure number to be used for generating the input files
     structure_num = None
 
     # Read the command line arguments

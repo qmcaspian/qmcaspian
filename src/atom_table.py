@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 
 def atom_property(query, target, value):
@@ -65,6 +65,47 @@ def atom_property(query, target, value):
         if row[innput] == value:
             return row[output]
 
+
+def bond_lenght(name_i, name_j,):
+    tolerance = 1.1  # a 10 % tolerance for bond length
+    i = name_i
+    j = name_j
+    covalant_radius = {'H': 0.32,
+                       'Li': 1.63,
+                       'Be': 0.90,
+                       'B':	0.82,
+                       'C':	0.77,
+                       'N':	0.75,
+                       'O':	0.73,
+                       'F':	0.72,
+                       'Ne': 0.71,
+                       'Na': 1.54,
+                       'Mg': 1.36,
+                       'Al': 1.18,
+                       'Si': 1.11,
+                       'P':	1.06,
+                       'S':	1.02,
+                       'Cl': 0.99,
+                       'Ar': 0.98,
+                       'K':	2.03,
+                       'Ca': 1.74,
+                       'Sc': 1.44,
+                       'Ti': 1.32,
+                       'V':	1.22,
+                       'Cr': 1.18,
+                       'Mn': 1.17,
+                       'Fe': 1.17,
+                       'Co': 1.16,
+                       'Ni': 1.15,
+                       'Cu': 1.17,
+                       'Zn': 1.25,
+                       'Ga': 1.26,
+                       'Ge': 1.22,
+                       'As': 1.20,
+                       'Se': 1.16,
+                       'Br': 1.14,
+                       'Kr': 1.12}
+    return (covalant_radius[i] + covalant_radius[j]) * 1.1
+
 if __name__ == '__main__':
     print(atom_property(query='name', target='symbol', value='S'))
-

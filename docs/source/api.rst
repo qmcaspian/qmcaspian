@@ -31,3 +31,10 @@ atom_table
    :members:
    :undoc-members:
 
+atom_table
+---------------------
+.. automodule:: qtopology
+   :members:
+   :undoc-members:
+
+

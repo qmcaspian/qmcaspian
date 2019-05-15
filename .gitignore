@@ -5,3 +5,5 @@
 *~
 *.pyc
 *.log
+*.top
+.idea/*

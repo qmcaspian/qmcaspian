@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 .. module:: atom
    :platform: Unix
@@ -30,7 +30,7 @@ class Macromolecule(object):
         self._nmol = 0
         self._nam = str(nam)
         self._mols = []
-        if mols != None:
+        if mols is not None:
             self.addmol(mols)
 
     def __iter__(self):

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 .. module:: atom
    :platform: Unix
@@ -39,7 +39,7 @@ class Molecule(object):
        3 - 4
     """
 
-    def __init__(self, num=0, nam=None, atms=None, head=None, tail=None, pos=None, chainnum=None, chainnam=None):
+    def __init__(self, num=0., nam=None, atms=None, head=None, tail=None, pos=None, chainnum=None, chainnam=None):
 
         self._num = int(num)
         self._nam = str(nam)
@@ -140,11 +140,11 @@ class Molecule(object):
     @property
     def nam(self):
         """
-        Sets/Returns Molecule number.
+        Sets/Returns Molecule name.
 
         >>> HOH = Molecule()
         >>> HOH.nam
-
+        'None'
         >>> HOH.nam = 'HOH'
         >>> HOH.nam
         'HOH'
@@ -265,7 +265,7 @@ class Molecule(object):
     def head(self, headAtom):
 
         if type(headAtom) is Atom:
-            select = [atom for atom in self if atom == headAtom]
+            select = [atom for atom in self._atms if atom == headAtom]
             if len(select) == 1:
                 self._head = select[0]
             else:
@@ -367,9 +367,9 @@ class Molecule(object):
         Sets/Returns the position of the molecule in a :class:`Macromolecule`. Could be set to "FIRST" or "LAST" for
         first or last residue in a chain.
 
-        >>> HOH = Molecule(Atom(num=1), Atom(num=2), Atom(num=3))
+        >>> HOH = Molecule(nam='HOH', atms=[Atom(num=1), Atom(num=2), Atom(num=3)])
         >>> HOH.pos
-        >>>
+        'None'
         >>> HOH.pos = 'FIRST'
         >>> if HOH.pos is 'FIRST': print('First residue')
         First residue
@@ -390,7 +390,7 @@ class Molecule(object):
 
         >>> HOH = Molecule()
         >>> HOH.chainnam
-        >>>
+        'None'
         >>> HOH.chainnam = 'A'
         >>> HOH.chainnam
         'A'
@@ -411,7 +411,7 @@ class Molecule(object):
 
         >>> HOH = Molecule()
         >>> HOH.chainnum
-        >>>
+        'None'
         >>> HOH.chainnum = 10
         >>> HOH.chainnum
         10
@@ -431,6 +431,7 @@ if __name__ == '__main__':
     mol1 = Molecule(num=1, nam='HOH', atms=[Atom(num=1, nam='H1'), Atom(num=2, nam='H2'), Atom(num=3, nam='O')])
     mol2 = Molecule(num=1, nam='PTP', atms=[Atom(num=1, nam='O1'), Atom(num=2, nam='C2'), Atom(num=3, nam='O')])
     mol3 = Molecule(num=1, nam='HOH', atms=[Atom(num=1, nam='H1'), Atom(num=2, nam='H2'), Atom(num=3, nam='O')])
+    mol4 = Molecule
 
     print(mol1 == mol2)
     print(mol1 is mol2)
@@ -438,5 +439,8 @@ if __name__ == '__main__':
     print(mol1 is mol3)
     print(mol1.selectbyAtomnum(1))
 
+
     for atom in mol1:
         print(type(atom), id(atom), atom.show)
+
+    print(mol4.__dict__)

@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 .. module:: atom
    :platform: Unix
 
 """
 from copy import deepcopy
+
 
 class Atom(object):
     """
@@ -19,7 +20,6 @@ class Atom(object):
 
     .. note::
        Initializing an :class:`Atom` object with arguments is optional.
-
        >>> O = Atom(121, 'OH', 13.015, 20.145, 21.457, 'O')
     """
     "tolerance value for float comparison"
@@ -40,12 +40,20 @@ class Atom(object):
         self._num = int(num)
         self._nam = str(nam)
         self._typ = str(typ)
+
     def __eq__(self, other):
-        if isinstance(other, Atom):
-            return (self._num == other._num) and (self._nam == other._nam) and \
-                   (abs(self._x - other._x) <= Atom.tolerance) and             \
-                   (abs(self._y - other._y) <= Atom.tolerance) and             \
-                   (abs(self._z - other._z) <= Atom.tolerance) and (self._typ == other._typ)
+        """
+            Atom equality is based on the atom num, name, and typ.
+            >>> O1 = Atom(num=1, nam='O1', x=0.0, y=0.0, z=0.0, typ='O')
+            >>> H2 = Atom(num=2, nam='Ha', x=1.0, y=0.0, z=0.0, typ='H')
+            >>> H3 = Atom(num=3, nam='Ha', x=0.0, y=1.0, z=0.0, typ='H')
+            >>> O1 == H2
+            False
+            >>> H2 == H3
+            True
+        """
+        if type(other) is Atom:
+            return (self._num == other._num) and (self._nam == other._nam) and (self._typ == other._typ)
         else:
             return NotImplemented
 
@@ -55,10 +63,78 @@ class Atom(object):
             return result
         return not result
 
+    def sameas(self, atom):
+        """
+            Two atom objects are the same if they have exactly the same attributes
+            >>> O1 = Atom(num=1, nam='O1', x=0.0, y=0.0, z=0.0, typ='O')
+            >>> H2 = Atom(num=2, nam='Ha', x=1.0, y=0.0, z=0.0, typ='H')
+            >>> H3 = Atom(num=3, nam='Ha', x=0.0, y=1.0, z=0.0, typ='H')
+            >>> OX = Atom(num=1, nam='O1', x=0.0, y=0.0, z=0.0, typ='O')
+
+            >>> O1.sameas(H2)
+            False
+            >>> O1.sameas(OX)
+            True
+        """
+        if type(atom) and (self == atom) and (self._num == atom.num) and ((self._x - atom.x) < self.tolerance) and \
+                                                                         ((self._y - atom.y) < self.tolerance) and \
+                                                                         ((self._z - atom.z) < self.tolerance):
+            return True
+        else:
+            return False
+
+    @property
+    def x(self):
+        """
+            Sets/Returns x coordinate.
+
+            >>> O = Atom()
+            >>> O.x = 3.015
+            >>> O.cord
+            [3.015, 0.0, 0.0]
+        """
+        return self._x
+
+    @x.setter
+    def x(self, x):
+        self._x = float(x)
+
+    @property
+    def y(self):
+        """
+            Sets/Returns y coordinate.
+
+            >>> O = Atom()
+            >>> O.y = 1.015
+            >>> O.cord
+            [0.0, 1.015, 0.0]
+        """
+        return self._y
+
+    @y.setter
+    def y(self, y):
+        self._y = float(y)
+
+    @property
+    def z(self):
+        """
+            Sets/Returns z coordinate.
+
+            >>> O = Atom()
+            >>> O.z = 2.0
+            >>> O.cord
+            [0.0, 0.0, 2.0]
+        """
+        return self._z
+
+    @z.setter
+    def z(self, z):
+        self._z = float(z)
+
     @property
     def cord(self):
         """
-            Sets/Returns coordinates.
+            Sets/Returns coordinates as list.
 
             >>> O = Atom()
             >>> O.cord = [3.015, 20.145, 21.457]
@@ -189,9 +265,10 @@ class Atom(object):
         return deepcopy(self)
 
 
+
 " An example of Atom class usage"
 if __name__ == '__main__':
-    O1 = Atom(num=121, nam='O1', x='13.015', y=20.145, z=21.457, typ='O')
+    O1 = Atom(num=121, nam='O1', x=13.015, y=20.145, z=21.457, typ='O')
     O2 = Atom(num=121, nam='O1', x=13.015, y=20.145, z=21.457, typ='O')
     H2 = Atom(num=122, nam='H', x=13.015, y=20.145, z=21.457, typ='H')
     ATOMS = [Atom(num=121, nam='O1', x=13.015, y=20.145, z=21.457, typ='O'),
