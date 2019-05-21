@@ -86,6 +86,10 @@ class Bond(object):
             raise ValueError('Pass an Atom object')
 
     @property
+    def atoms(self):
+        return [self._i, self._j]
+
+    @property
     def f(self):
         return self._f
 
@@ -204,6 +208,10 @@ class Angle(object):
             raise ValueError('Pass a Atom object')
 
     @property
+    def atoms(self):
+        return [self._i, self._j, self._k]
+
+    @property
     def f(self):
         return self._f
 
@@ -280,7 +288,6 @@ class Torsion(object):
     def __gt__(self, other):
         return not self < other
 
-
     def __contains__(self, item):
         if type(item) is Atom:
             return (self._i == item) or (self._j == item) or (self._k == item) or (self._l == item)
@@ -341,6 +348,10 @@ class Torsion(object):
             self._l = l
         else:
             raise ValueError('Pass a Atom object')
+
+    @property
+    def atoms(self):
+        return [self._i, self._j, self._k, self._l]
 
     @property
     def n(self):
@@ -540,7 +551,6 @@ class Improper(object):
     def __gt__(self, other):
         return not self < other
 
-
     def __contains__(self, item):
         if type(item) is Atom:
             return (self._i == item) or (self._j == item) or (self._k == item) or (self._l == item)
@@ -605,6 +615,10 @@ class Improper(object):
             raise ValueError('Pass a Atom object')
 
     @property
+    def atoms(self):
+        return [self._i, self._j, self._k, self._l]
+
+    @property
     def f(self):
         return self._f
 
@@ -633,10 +647,12 @@ class InternalCoordinate(object):
        - **Parm torsions** (:class:`Torsion`):
        - **Parm impropers** (:class:`Improper`):
     """
+    Rad2Degree = 57.2957795
+    ImproperAngleCutoff = 10.0
 
     def __init__(self):
         self._charge = None
-        self._structure = Molecule(num=1, nam='Freq Calculation')
+        self._structure = Molecule(num=1)
         self._bonds = []
         self._angles = []
         self._torsions = []
@@ -658,6 +674,13 @@ class InternalCoordinate(object):
     def structure(self):
         return self._structure
 
+    @structure.setter
+    def structure(self, struc):
+        if isinstance(struc, Molecule):
+            self._structure = struc
+        else:
+            raise ValueError('Error >>> Pass a Molecule object')
+
     @property
     def nbond(self):
         return len(self._bonds)
@@ -665,6 +688,13 @@ class InternalCoordinate(object):
     @property
     def bonds(self):
         return self._bonds
+
+    @bonds.setter
+    def bonds(self, bonds_list):
+        if any([type(bond) != Bond for bond in bonds_list]):
+            raise ValueError('Pass a list of bond objects')
+        else:
+            self._bonds = bonds_list
 
     def addbond(self, bond):
         if type(bond) is Bond:
@@ -678,6 +708,24 @@ class InternalCoordinate(object):
                 self._bonds.append(bond)
             else:
                 raise ValueError('Error >>> Pass a list of bond objects')
+
+    def deletebond(self, bond):
+        if type(bond) is Bond:
+            self._bonds.remove(bond)
+        else:
+            raise ValueError('Error >>> Pass a bond object')
+
+    def deletebonds(self, bonds=None):
+        if bonds == None:
+            self._bonds = []
+        elif type(bonds) is list:
+            for bond in bonds:
+                if type(bond) is Bond:
+                    self._bonds.remove(bond)
+                else:
+                    raise ValueError('Error >>> Pass a list of bond objects')
+        else:
+            raise ValueError('Error >>> Pass a list of bond objects')
 
     def selectbond(self, bond):
         if type(bond) is Bond:
@@ -748,39 +796,6 @@ class InternalCoordinate(object):
         else:
             print("Error >>> at least 2 atoms are needed to construct bond terms. Number of atoms are: ", self.natm)
 
-    def constructbondsbyMol2(self, ifile):
-        if self.natm > 1:
-            h = hessian
-            # Construct the bonds
-            for i in range(1, self.natm + 1):
-                lbound_i = (i - 1) * 3
-                hbound_i = (lbound_i + 3)
-
-                for j in range(i + 1, self.natm + 1):
-                    lbound_j = (j - 1) * 3
-                    hbound_j = (lbound_j + 3)
-
-                    # Get the partial hessian
-                    hij = h[lbound_i:hbound_i, lbound_j:hbound_j] * (-1)
-
-                    # Get the Eigen values
-                    wij = np.linalg.eigvals(hij)
-
-                    # assign bonds with positive Eigen values
-                    if (np.isreal(wij).all() and (wij > 0).all()):
-
-                        # Calculate the bond distance
-                        uij = np.linalg.norm(np.array(self.structure.selectbyAtomnum(j).cord) - np.array(self.structure.selectbyAtomnum(i).cord))
-                        ibond = Bond(i=self.structure.selectbyAtomnum(i), j=self.structure.selectbyAtomnum(j), r=uij)
-                        if ibond not in self.bonds:
-                            self.addbond(ibond)
-
-            # Sort the bonds
-            self.bonds.sort()
-
-        else:
-            print("Error >>> at least 2 atoms are needed to construct bond terms. Number of atoms are: ", self.natm)
-
     @property
     def nangle(self):
         return len(self._angles)
@@ -788,6 +803,13 @@ class InternalCoordinate(object):
     @property
     def angles(self):
         return self._angles
+
+    @angles.setter
+    def angles(self, angles_list):
+        if any([type(angle) != Angle for angle in angles_list]):
+            raise ValueError('Pass a list of bond objects')
+        else:
+            self._angles = angles_list
 
     def addangle(self, angle):
         if type(angle) is Angle:
@@ -801,6 +823,24 @@ class InternalCoordinate(object):
                 self._angles.append(angle)
             else:
                 raise ValueError('Error >>> Pass a list of Angle objects')
+
+    def deleteangle(self, angle):
+        if type(angle) is Angle:
+            self._angles.remove(angle)
+        else:
+            raise ValueError('Error >>> Pass an angle object')
+
+    def deleteangles(self, angles=None):
+        if angles == None:
+            self._angles = []
+        elif type(angles) is list:
+            for angle in angles:
+                if type(angle) is Angle:
+                    self._angles.remove(angle)
+                else:
+                    raise ValueError('Error >>> Pass a list of angle objects')
+        else:
+            raise ValueError('Error >>> Pass a list of angle objects')
 
     def selectangle(self, angle):
         if type(angle) is Angle:
@@ -817,13 +857,48 @@ class InternalCoordinate(object):
     def selectanglebyBond(self, bond):
         return [iangle for iangle in self._angles if bond in iangle]
 
+    def constructangles(self):
+        if self.nbond > 1:
+            self._bonds.sort()
+            for atom_i in self.structure.atoms:
+                for atom_j in self.structure.atoms:
+                    for atom_k in self.structure.atoms:
+                        if (Bond(i=atom_i, j=atom_j) in self.bonds) and (Bond(i=atom_j, j=atom_k) in self.bonds) and atom_i != atom_k:
+
+                            angle = Angle(i=atom_i, j=atom_j, k=atom_k)
+                            if angle not in self.angles:
+
+                                # Get the unit vectors
+                                uji = np.array(atom_i.cord) - np.array(atom_j.cord)
+                                uji /= np.linalg.norm(uji)
+
+                                ujk = np.array(atom_k.cord) - np.array(atom_j.cord)
+                                ujk /= np.linalg.norm(ujk)
+
+                                # Get the angle
+                                t = np.arccos(np.dot(uji, ujk))
+                                t *= self.Rad2Degree
+
+                                angle.t =t
+                                self.addangle(angle)
+            self.angles.sort()
+        else:
+            print("Error >>> at least bonds are needed to construct angle terms. Number of bonds are: ", self.nbond)
+
     @property
     def ntorsion(self):
-        return len(self._angles)
+        return len(self._torsions)
 
     @property
     def torsions(self):
         return self._torsions
+
+    @torsions.setter
+    def torsions(self, torsion_list):
+        if any([type(torsion) != Torsion for torsion in torsion_list]):
+            raise ValueError('Pass a list of torsion objects')
+        else:
+            self._torsions = torsion_list
 
     def addtorsion(self, torsion):
         if type(torsion) is Torsion:
@@ -837,6 +912,24 @@ class InternalCoordinate(object):
                 self._torsions.append(torsion)
             else:
                 raise ValueError('Error >>> Pass a list of Angle objects')
+
+    def deletetorsion(self, torsion):
+        if type(torsion) is Torsion:
+            self._torsions.remove(torsion)
+        else:
+            raise ValueError('Error >>> Pass a torsion object')
+
+    def deletetorsions(self, torsions=None):
+        if torsions == None:
+            self._torsions = []
+        elif type(torsions) is list:
+            for torsion in torsions:
+                if type(torsion) is Torsion:
+                    self._torsions.remove(torsion)
+                else:
+                    raise ValueError('Error >>> Pass a list of torsion objects')
+        else:
+            raise ValueError('Error >>> Pass a list of torsion objects')
 
     def selecttorsion(self, torsion):
         if type(torsion) is Torsion:
@@ -857,6 +950,51 @@ class InternalCoordinate(object):
     def selecttorsionbyAngle(self, angle):
         return [itorsion for itorsion in self._torsions if angle in itorsion]
 
+    def constructtorsions(self):
+
+        if self.nangle > 1:
+            self._angles.sort()
+            for atom_i in self.structure.atoms:
+                for atom_j in self.structure.atoms:
+                    for atom_k in self.structure.atoms:
+                        for atom_l in self.structure.atoms:
+                            if (Angle(i=atom_i, j=atom_j, k=atom_k) in self.angles) and \
+                               (Angle(i=atom_j, j=atom_k, k=atom_l) in self.angles) and atom_i != atom_l:
+
+                                torsion = Torsion(i=atom_i, j=atom_j, k=atom_k, l=atom_l)
+                                if torsion not in self.torsions:
+
+                                    # Get the unit vectors uij, uik, ujk, ujl
+                                    uij = np.array(atom_j.cord) - np.array(atom_i.cord)
+                                    uij /= np.linalg.norm(uij)
+
+                                    uik = np.array(atom_k.cord) - np.array(atom_i.cord)
+                                    uik /= np.linalg.norm(uik)
+
+                                    ujk = np.array(atom_k.cord) - np.array(atom_j.cord)
+                                    ujk /= np.linalg.norm(ujk)
+
+                                    ujl = np.array(atom_l.cord) - np.array(atom_j.cord)
+                                    ujl /= np.linalg.norm(ujl)
+
+                                    # Get the unit vectors angles tkij, tljk
+                                    tkij = np.arccos(np.dot(uik, uij))
+                                    tljk = np.arccos(np.dot(ujl, ujk))
+
+                                    # Get the normals
+                                    uijk = np.cross(uij, uik) / np.sin(tkij)
+                                    ujkl = np.cross(ujk, ujl) / np.sin(tljk)
+
+                                    # Get the torsion angle
+                                    tijkl = np.sign(np.dot(uij, ujkl)) * np.arccos(np.dot(uijk, ujkl))
+
+                                    torsion.t1 = tijkl * self.Rad2Degree
+                                    self.addtorsion(torsion)
+
+            self.torsions.sort()
+        else:
+            print("Error >>> at least 2 angles are needed to construct torsion terms. Number of angles are: ", self.nangle)
+
     @property
     def nimproper(self):
         return len(self._impropers)
@@ -864,6 +1002,13 @@ class InternalCoordinate(object):
     @property
     def impropers(self):
         return self._impropers
+
+    @impropers.setter
+    def impropers(self, improper_list):
+        if any([type(improper) != Improper for improper in improper_list]):
+            raise ValueError('Pass a list of improper objects')
+        else:
+            self._impropers = improper_list
 
     def addimproper(self, improper):
         if type(improper) is Improper:
@@ -877,6 +1022,24 @@ class InternalCoordinate(object):
                 self._impropers.append(improper)
             else:
                 raise ValueError('Error >>> Pass a list of Improper objects')
+
+    def deleteimproper(self, improper):
+        if type(improper) is Improper:
+            self._impropers.remove(improper)
+        else:
+            raise ValueError('Error >>> Pass an improper object')
+
+    def deleteimpropers(self, impropers=None):
+        if impropers == None:
+            self._impropers = []
+        elif type(impropers) is list:
+            for improper in impropers:
+                if type(improper) is Improper:
+                    self._impropers.remove(improper)
+                else:
+                    raise ValueError('Error >>> Pass a list of impropers objects')
+        else:
+            raise ValueError('Error >>> Pass a list of torsion objects')
 
     def selectimproper(self, improper):
         if type(improper) is Improper:
@@ -896,21 +1059,70 @@ class InternalCoordinate(object):
     def selectimproperbyAngle(self, angle):
         return [iimproper for iimproper in self._impropers if angle in iimproper]
 
+    def constructimpropers(self):
+
+        if self.nangle > 1:
+            self._angles.sort()
+            for atom_i in self.structure.atoms:
+
+                # Get all angles with the same middle atom
+                angle_list = self.selectanglebyPivotAtom(atom_i)
+
+                # Get the potential impropers with the give pivot atom.
+                if len(angle_list) == 3:
+                    atom_list = []
+                    for angle in angle_list:
+                        for atom in angle.atoms:
+                            if atom != atom_i and atom not in atom_list:
+                                atom_list.append(atom)
+                    atom_list.sort()
+
+                    # Calculate the improper angles
+                    # Get the unit vectors uij, uik, ujk, ujl
+                    uij = np.array(atom_list[0].cord) - np.array(atom_i.cord)
+                    uij /= np.linalg.norm(uij)
+
+                    uik = np.array(atom_list[1].cord) - np.array(atom_i.cord)
+                    uik /= np.linalg.norm(uik)
+
+                    ujk = np.array(atom_list[1].cord) - np.array(atom_list[0].cord)
+                    ujk /= np.linalg.norm(ujk)
+
+                    ujl = np.array(atom_list[2].cord) - np.array(atom_list[1].cord)
+                    ujl /= np.linalg.norm(ujl)
+
+                    # Get the unit vectors angles tkij, tljk
+                    tkij = np.arccos(np.dot(uik, uij))
+                    tljk = np.arccos(np.dot(ujl, ujk))
+
+                    # Get the normals
+                    uijk = np.cross(uij, uik) / np.sin(tkij)
+                    ujkl = np.cross(ujk, ujl) / np.sin(tljk)
+
+                    # Get the torsion angle
+                    tijkl = np.sign(np.dot(uij, ujkl)) * np.arccos(np.dot(uijk, ujkl))
+                    t = tijkl * self.Rad2Degree
+
+                    if np.abs(t) <= self.ImproperAngleCutoff:
+                        self.addimproper(Improper(i=atom_i, j=atom_list[0], k=atom_list[1], l=atom_list[2], t=t))
+
+        else:
+            print("Error >>> at least 2 angles are needed to construct improper terms. Number of angles are: ", self.nangle)
 
 if __name__ == '__main__':
 
     a = Atom(num=1, nam='H')
     b = Atom(num=2, nam='O')
     ab = Bond(i=a, j=b)
-    abcd = Torsion(i=a, j=b, k=a, l=b, f=[0.0, 1.0], t=[0.0, 1.0], phi=[0.0, 1.0])
+    abcd = Torsion(i=a, j=b, k=a, l=b, f1=0.0, f2=1.0, t1=0.0, t2=1.0, p1=0.0, p2=1.0)
 
-    tsuv = Torsion(i=a, j=b, k=a, l=b, f=5., t=1., phi=180)
+    tsuv = Torsion(i=a, j=b, k=a, l=b, f1=5., t1=1., p1=180)
 
     if (ab.i == ab.j):
         print('YES')
 
     print(tsuv.f)
     print(tsuv.t)
-    print(tsuv.phi)
+    print(tsuv.p)
     print(tsuv.n)
     print(tsuv.i.show)

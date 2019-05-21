@@ -6,6 +6,7 @@ from macromolecule import Macromolecule
 from atom_table import atom_property
 from internal_coordinate import *
 import sys
+import os
 import re
 import math
 import numpy as np
@@ -229,21 +230,23 @@ class FreqFchkG09():
         self._natm = self.get_natm(ifile) # To temporarily cash the number of atoms
         self.freq = Freq()
         self.freq.method = method
-        self.freq.internal_coord = self.get_internal_coord(ifile)
-        self.freq.hessian_cartesian = self.get_hessian_cartesian(ifile)
-
+        self.get_chrge(ifile)
+        self.get_atoms(ifile)
+        self.get_bonded_coord(ifile)
+        self.get_hessian_cartesian(ifile)
         """
-        print(self.natm)
-        print(self.charge)
-        for atom in self.structure: print(atom.show)
+        print(self.freq.internal_coord.natm)
+        print(self.freq.internal_coord.charge)
+        for atom in self.freq.internal_coord.structure:
+            print(atom.show)
 
-        for bond in self.internal_coord.bonds:
+        for bond in self.freq.internal_coord.bonds:
             print(bond.show)
 
-        for angle in self.internal_coord.angles:
+        for angle in self.freq.internal_coord.angles:
             print(angle.show)
 
-        for torsion in self.internal_coord.torsions:
+        for torsion in self.freq.internal_coord.torsions:
             print(torsion.show)
 
         np.set_printoptions(precision=1, suppress=True, threshold=np.inf, linewidth=520)
@@ -261,80 +264,83 @@ class FreqFchkG09():
                     print('Warning >>> Could not find the number of atoms')
                     return None
 
-    def get_internal_coord(self, ifile):
-
-        internal_coord = InternalCoordinate()
-        internal_coord_found = False
-
+    def get_chrge(self, ifile):
         # Read the charge
         with open(ifile, mode='r') as f:
             for line in f:
                 if re.search(r'^Charge', str(line)):
-                    internal_coord.charge = int(line.split()[2])
+                    self.freq.internal_coord.charge = int(line.split()[2])
                 elif not line:
                     print('Warning >>> Could not find the total charge')
-                    return None
 
-        # Reading the atom data
+    def get_atoms(self, ifile):
+        atoms_found = False
+        # Find the atom data section
         with open(ifile, mode='r') as f:
             # read  the atomic numbers
             for line in f:
                 if re.search(r'^Atomic numbers', str(line)):
-                    internal_coord_found = True
+                    atoms_found = True
                     break  # bring the pointer to the correct place
 
             # each line contain Max 6 atomic numbers, So the number of lines to be read is ceil(natm / 6)
-            if internal_coord_found:
+            if atoms_found:
+                self.freq.internal_coord.structure.num = 1
+                self.freq.internal_coord.structure.nam = os.path.splitext(ifile)[0]
                 count = 1
                 for i in range(math.ceil(self._natm / 6)):
                     for atm_num in f.readline().split():
                         # Get the atom symbol by atomic number
                         atm_symbol = atom_property(query='symbol', target='number', value=int(atm_num))
-                        internal_coord.structure.addatm(Atom(num=count, nam=atm_symbol, typ=atm_symbol))
+                        self.freq.internal_coord.structure.addatm(Atom(num=count, nam=atm_symbol, typ=atm_symbol))
                         count += 1
             else:
                 print('Warning >>> Atom numbers were not found')
-                return None
 
-            # Read the coordinates
-            internal_coord_found = False
+            # Find the coordinates section
+            atoms_found = False
             for line in f:
                 if re.search(r'^Current cartesian coordinates', str(line)):
                     # Number of lines to read is the number of elements in the section / 5 (number of elements in each line)
                     lines_to_read = math.ceil(int(line.split()[5]) / 5)
-                    internal_coord_found = True
+                    atoms_found = True
                     break
+
             # Read the coordinate
-            if internal_coord_found:
+            if atoms_found:
                 coord_list = []
                 for i in range(lines_to_read):
                     for coord in f.readline().split():
                         coord_list.append(self.Bohr2Angstrom * float(coord))
 
-                # deposit the coordinates to the molecule
-                for atom in internal_coord.structure:
+                # Deposit the coordinates to the molecule
+                for atom in self.freq.internal_coord.structure:
                     lower_bound = ((atom.num - 1) * 3)
                     higher_bound = lower_bound + 3
                     atom.cord = coord_list[lower_bound:higher_bound]
             else:
-                print('Warning >>> Atom coordinates were not found')
-                return None
+                print('Warning >>> Atom coordinates were not found in ', ifile)
 
-        internal_coord_found = False
+    def get_bonded_coord(self, ifile):
+
         with open(ifile) as f:
+
             # Get the numbers of the internal coord
+            internal_coord_found = False
             for line in f:
                 if re.search(r'Redundant internal dimensions', str(line)):
                     internal_coord_found =True
                     break
+
             if internal_coord_found:
                 n_iternal_coords, n_bonds, n_angles, n_torsions = f.readline().split()
                 n_iternal_coords, n_bonds, n_angles, n_torsions = int(n_iternal_coords), int(n_bonds), int(n_angles), int(n_torsions)
-            else:
-                print('Warning >>> The internal coordinates were not found')
+            else: # Get out
+                print('Warning >>> The bonded terms were not found in ', ifile)
                 return None
 
-            # Read the list of internal coordinates indices
+            # Find the internal coordinates indices
+            internal_coord_found = False
             for line in f:
                 if re.search(r'Redundant internal coordinate indices', str(line)):
                     internal_coord_found = True
@@ -343,16 +349,18 @@ class FreqFchkG09():
                     break
 
             # Read internal coordinates indices into a list
-            internal_coord_indices = []
             if internal_coord_found:
+                internal_coord_indices = []
                 for i in range(lines_to_read):
                     for indice in f.readline().split():
                         internal_coord_indices.append(int(indice))
-            else:
+            else: # Get out
                 print('Warning >>> The internal coordinates were not found')
                 return None
 
-            # Get the list of equilibrium values of the internal coordinates
+
+            # Find the equilibrium values of the internal coordinates
+            internal_coord_found = False
             for line in f:
                 if re.search(r'Redundant internal coordinates', line):
                     internal_coord_found = True
@@ -365,50 +373,50 @@ class FreqFchkG09():
                 for i in range(lines_to_read):
                     for val in f.readline().split():
                         internal_coord_val.append(float(val))
-            else:
+            else: # get out
                 print('Warning >>> The internal coordinates were not found')
                 return None
 
         # Generate the internal_coord object. Every 4 elements corresponds to one degree of freedom. That is,
         # the bonds have zeros in the last two elements, etc.
-        count = 0
-        while count < n_bonds:
-            lower_bound = count * 4
-            higher_bound = lower_bound + 4
-            i_indice = internal_coord_indices[lower_bound:higher_bound]
-            atom_i = internal_coord.structure.selectbyAtomnum(i_indice[0])
-            atom_j = internal_coord.structure.selectbyAtomnum(i_indice[1])
-            i_bond = Bond(i=atom_i, j=atom_j, r=(self.Bohr2Angstrom * internal_coord_val[count]))
-            internal_coord.addbond(i_bond)
-            count += 1
+        if internal_coord_found and self.freq.internal_coord.natm > 1:
+            count = 0
+            while count < n_bonds:
+                lower_bound = count * 4
+                higher_bound = lower_bound + 4
+                i_indice = internal_coord_indices[lower_bound:higher_bound]
+                atom_i = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[0])
+                atom_j = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[1])
+                i_bond = Bond(i=atom_i, j=atom_j, r=(self.Bohr2Angstrom * internal_coord_val[count]))
+                self.freq.internal_coord.addbond(i_bond)
+                count += 1
 
-        while count < n_angles + n_bonds:
-            lower_bound = count * 4
-            higher_bound = lower_bound + 4
-            i_indice = internal_coord_indices[lower_bound:higher_bound]
-            atom_i = internal_coord.structure.selectbyAtomnum(i_indice[0])
-            atom_j = internal_coord.structure.selectbyAtomnum(i_indice[1])
-            atom_k = internal_coord.structure.selectbyAtomnum(i_indice[2])
-            i_angle = Angle(i=atom_i, j=atom_j, k=atom_k, t=(self.Rad2Degree * internal_coord_val[count]))
-            internal_coord.addangle(i_angle)
-            count += 1
+            while count < n_angles + n_bonds:
+                lower_bound = count * 4
+                higher_bound = lower_bound + 4
+                i_indice = internal_coord_indices[lower_bound:higher_bound]
+                atom_i = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[0])
+                atom_j = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[1])
+                atom_k = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[2])
+                i_angle = Angle(i=atom_i, j=atom_j, k=atom_k, t=(self.Rad2Degree * internal_coord_val[count]))
+                self.freq.internal_coord.addangle(i_angle)
+                count += 1
 
-        while count < n_torsions + n_angles + n_bonds:
-            lower_bound = count * 4
-            higher_bound = lower_bound + 4
-            i_indice = internal_coord_indices[lower_bound:higher_bound]
-            atom_i = internal_coord.structure.selectbyAtomnum(i_indice[0])
-            atom_j = internal_coord.structure.selectbyAtomnum(i_indice[1])
-            atom_k = internal_coord.structure.selectbyAtomnum(i_indice[2])
-            atom_l = internal_coord.structure.selectbyAtomnum(i_indice[3])
-            i_torsion = Torsion(i=atom_i, j=atom_j, k=atom_k, l=atom_l, t1=(self.Rad2Degree * internal_coord_val[count]))
-            internal_coord.addtorsion(i_torsion)
-            count += 1
-
-        return internal_coord
+            while count < n_torsions + n_angles + n_bonds:
+                lower_bound = count * 4
+                higher_bound = lower_bound + 4
+                i_indice = internal_coord_indices[lower_bound:higher_bound]
+                atom_i = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[0])
+                atom_j = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[1])
+                atom_k = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[2])
+                atom_l = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[3])
+                i_torsion = Torsion(i=atom_i, j=atom_j, k=atom_k, l=atom_l, t1=(self.Rad2Degree * internal_coord_val[count]))
+                self.freq.internal_coord.addtorsion(i_torsion)
+                count += 1
 
     def get_hessian_cartesian(self, ifile):
-        # read the hessian as a list.
+
+        # Read the hessian as a list.
         hessian_found = False
         with open(ifile) as f:
             for line in f:
@@ -419,13 +427,13 @@ class FreqFchkG09():
                     lines_to_read = math.ceil(n_elements / 5)
                     break
 
-            # read the lower triangle matrix into a list
+            # Read the lower triangle matrix into a list
             if hessian_found:
                 hessian_list = []
                 for i in range(lines_to_read):
                     for element in f.readline().split():
                         hessian_list.append(float(element))
-            else:
+            else: # Get out
                 print('Warning >>> The Cartesian Hessian matrix was not found')
                 return None
 
@@ -435,10 +443,57 @@ class FreqFchkG09():
         np.set_printoptions(precision=5, suppress=True, threshold=np.inf, linewidth=520)
         hessian[(i, j)] = hessian_list
         hessian[(j, i)] = hessian_list
-        hessian = hessian * (self.Hartree2Kcalmol / (self.Bohr2Angstrom * self.Bohr2Angstrom))
-        return hessian
+        hessian *= self.Hartree2Kcalmol / (self.Bohr2Angstrom * self.Bohr2Angstrom)
+        self.freq.hessian_cartesian = hessian
+
+class parseMol2(object):
+    def __init__(self, ifile):
+        self.internal_coord = InternalCoordinate()
+        self.get_atoms(ifile)
+        self.get_bonds(ifile)
+        self.getresult()
 
 
+    def get_atoms(self, ifile):
+        with open(ifile) as f:
+            atom_found = False
+            for line in f:
+                if re.search(r'@<TRIPOS>ATOM', str(line)):
+                    atom_found = True
+                    continue
+                if re.search(r'@<TRIPOS>BOND', str(line)):
+                    break
+
+                if atom_found:
+                    inum, iname, ix, iy, iz, ityp = line.split()[0:6]
+                    self.internal_coord.structure.addatm(Atom(num=inum, nam=iname, x=ix, y=iy, z=iz, typ=ityp[0]))
+        if not atom_found:
+            print('Warning >>> Atom section was not found')
+            return None
+
+    def get_bonds(self, ifile):
+        with open(ifile) as f:
+            bond_found = False
+            for line in f:
+                if re.search(r'@<TRIPOS>BOND', str(line)):
+                    bond_found = True
+                    continue
+                if re.search(r'@<TRIPOS>SUBSTRUCTURE', str(line)):
+                    break
+
+                if bond_found:
+                    i = int(line.split()[1])
+                    j = int(line.split()[2])
+                    atom_i = self.internal_coord.structure.selectbyAtomnum(i)
+                    atom_j = self.internal_coord.structure.selectbyAtomnum(j)
+                    dij = np.linalg.norm(np.array(atom_j.cord) - np.array(atom_i.cord))
+                    self.internal_coord.addbond(Bond(i=atom_i, j=atom_j, r=dij))
+        if not bond_found:
+            print('Warning >>> Bond section was not found')
+            return None
+
+    def getresult(self):
+        return self.internal_coord
 
 
 " An example of class usage"

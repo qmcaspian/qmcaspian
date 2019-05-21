@@ -1,6 +1,6 @@
 #!/bin/bash/python3
 
-from parse_qm import FreqFchkG09
+from parsers import FreqFchkG09
 from internal_coordinate import *
 import numpy as np
 
@@ -15,6 +15,7 @@ class GetBondedfromQM(object):
         self.calculate_bond_forces()
         self.calculate_angle_forces()
         self.calculate_torsion_forces()
+        self.calculate_improper_forces()
 
     def calculate_bond_forces(self):
         # The calculations for each bond will be done for both i-j and j-i)
@@ -257,4 +258,67 @@ class GetBondedfromQM(object):
             #k_jijk = -1 / k_jijk
 
             # assign the angle force constant
-            torsion.f1 = float(k)
+            torsion.f1 = k
+
+    def calculate_improper_forces(self):
+
+        for improper in self.ifreq.internal_coord.impropers:
+
+            # Get the indices of the partial hessian
+            lbound_i = (improper.i.num - 1) * 3
+            hbound_i = (lbound_i + 3)
+            lbound_j = (improper.j.num - 1) * 3
+            hbound_j = (lbound_j + 3)
+            lbound_k = (improper.k.num - 1) * 3
+            hbound_k = (lbound_k + 3)
+            lbound_l = (improper.l.num - 1) * 3
+            hbound_l = (lbound_l + 3)
+
+            # Get the partial hessian
+            hij = self.ifreq.hessian_cartesian[lbound_i:hbound_i, lbound_j:hbound_j]
+            hik = self.ifreq.hessian_cartesian[lbound_i:hbound_i, lbound_k:hbound_k]
+            hil = self.ifreq.hessian_cartesian[lbound_i:hbound_i, lbound_l:hbound_l]
+
+            # Get the Eigen values and vectors
+            wij, vij = np.linalg.eig(hij)
+            wik, vik = np.linalg.eig(hik)
+            wil, vil = np.linalg.eig(hil)
+
+            # Get the angle unit vectors.
+            rij = np.array(improper.j.cord) - np.array(improper.i.cord)
+            uij = rij / np.linalg.norm(rij)
+
+            rkj = np.array(improper.j.cord) - np.array(improper.k.cord)
+            ukj = rkj / np.linalg.norm(rkj)
+
+            rjk = np.array(improper.k.cord) - np.array(improper.j.cord)
+            ujk = rjk / np.linalg.norm(rjk)
+
+            rlk = np.array(improper.k.cord) - np.array(improper.l.cord)
+            ulk = rlk / np.linalg.norm(rlk)
+
+            # Get the normal unit vector
+            rn_ijk = np.cross(ukj, uij)
+            n_ijk = rn_ijk / np.linalg.norm(rn_ijk)
+
+            rn_jkl = np.cross(ulk, ujk)
+            n_jkl = rn_jkl / np.linalg.norm(rn_jkl)
+
+            # Get the projections
+            kn = 0.0
+            for i in range(3):
+                kn = kn + (wij[i]) * np.abs(np.dot(n_jkl, vij[:, i])) + \
+                          (wik[i]) * np.abs(np.dot(n_jkl, vik[:, i])) + \
+                          (wil[i]) * np.abs(np.dot(n_jkl, vil[:, i]))
+
+
+            # Calculate the (2 * area) of ijk
+            Aijk = np.abs(np.linalg.norm(rn_ijk))
+
+            # Calculate the altitude of ijk with base jk
+            hijk = Aijk / np.linalg.norm(rjk)
+
+            h2 = np.square(hijk * np.dot(n_ijk, n_jkl))
+
+            improper.f = -1 * h2 * kn
+

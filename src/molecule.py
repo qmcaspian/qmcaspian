@@ -171,6 +171,17 @@ class Molecule(object):
         return self._natm
 
     @property
+    def atoms(self):
+        return self._atms
+
+    @atoms.setter
+    def atoms(self, atoms_list):
+        if all(isinstance(atom, Atom) for atom in atoms_list):
+            self._atms = atoms_list
+        else:
+            raise ValueError('Pass a list of Atom objects')
+
+    @property
     def show(self):
         """
         Returns num, nam, natm.

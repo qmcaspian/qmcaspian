@@ -46,7 +46,7 @@ class Atom(object):
             Atom equality is based on the atom num, name, and typ.
             >>> O1 = Atom(num=1, nam='O1', x=0.0, y=0.0, z=0.0, typ='O')
             >>> H2 = Atom(num=2, nam='Ha', x=1.0, y=0.0, z=0.0, typ='H')
-            >>> H3 = Atom(num=3, nam='Ha', x=0.0, y=1.0, z=0.0, typ='H')
+            >>> H3 = Atom(num=2, nam='Ha', x=0.0, y=1.0, z=0.0, typ='H')
             >>> O1 == H2
             False
             >>> H2 == H3
@@ -59,8 +59,16 @@ class Atom(object):
 
     def __ne__(self, other):
         result = self.__eq__(other)
-        if result is NotImplemented:
-            return result
+        return not result
+
+    def __gt__(self, other):
+        if type(other) is Atom:
+            return self._num > other.num
+        else:
+            return NotImplemented
+
+    def __le__(self, other):
+        result = self.__gt__(other)
         return not result
 
     def sameas(self, atom):
@@ -77,8 +85,8 @@ class Atom(object):
             True
         """
         if type(atom) and (self == atom) and (self._num == atom.num) and ((self._x - atom.x) < self.tolerance) and \
-                                                                         ((self._y - atom.y) < self.tolerance) and \
-                                                                         ((self._z - atom.z) < self.tolerance):
+                ((self._y - atom.y) < self.tolerance) and \
+                ((self._z - atom.z) < self.tolerance):
             return True
         else:
             return False
@@ -263,7 +271,6 @@ class Atom(object):
             [2, 'ND', 0.0, 0.0, 0.0, 'O']
         """
         return deepcopy(self)
-
 
 
 " An example of Atom class usage"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from parse_qm import parseQM
+from parsers import parseQM
 
 
 def fh_correction():

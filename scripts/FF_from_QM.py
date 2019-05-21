@@ -1,6 +1,6 @@
 #!/usr/bin/python3.5
 
-from parse_qm import *
+from parsers import *
 from ff_bonded_from_qm import *
 import argparse
 
@@ -27,37 +27,92 @@ def FF_bonded_from_QM():
     """
     # Read the command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("input_file", type=str, help="input file: Formatted checkpoint file of "
+    parser.add_argument("freq", type=str, help="freq file: Formatted checkpoint file of "
                                                      "freq calculation G09 with \"freq=intmodes\" keyword")
-    args = parser.parse_args()
-    ifile = args.input_file
+    parser.add_argument("-s", type=str, help="structure file: an optional mol2 file from which the bonds will be read.")
+    try:
+        args = parser.parse_args()
+        freq_file = args.freq
+        mol2_file = args.s
+    except:
+        print('Use -h for flags and argument\n')
+        return 1
 
     # Read the input frequency calculation checkpoint file
-    freq = parseQM(ifile, 'G')
-    #print(type(freq))
+    freq = parseQM(freq_file, 'G')
+    freq.internal_coord.bonds.sort()
+    freq.internal_coord.angles.sort()
+    freq.internal_coord.torsions.sort()
 
-    np.set_printoptions(precision=3, suppress=True, threshold=np.inf, linewidth=520)
+    print('------------------------------------------------------------')
+    np.set_printoptions(precision=1, suppress=True, threshold=np.inf, linewidth=520)
     #print(freq.hessian_cartesian)
+    #for i, atom in enumerate(freq.internal_coord.structure): print(atom.show)
+    #for i, bond in enumerate(freq.internal_coord.bonds): print(i, bond.show)
+    #for i, angle in enumerate(freq.internal_coord.angles): print(i, angle.show)
+    #for i, torsion in enumerate(freq.internal_coord.torsions): print(i, torsion.show)
+    for i, improper in enumerate(freq.internal_coord.impropers): print(i, improper.show)
 
-    # Calculate the force constances and assign them to the internal coordinates.
+    print('------------------------------------------------------------')
+
+    freq.internal_coord.deletebonds()
+    freq.internal_coord.deleteangles()
+    freq.internal_coord.deletetorsions()
+    freq.internal_coord.deleteimpropers()
+
+    # If the structure file is given then read the bonds from mol2 file.
+    if mol2_file:
+        # Erease all bonded terms
+        freq.internal_coord.deletebonds()
+        freq.internal_coord.deleteangles()
+        freq.internal_coord.deletetorsions()
+        freq.internal_coord.deleteimpropers()
+
+        # Read the mol2 file
+        mol2 = parseMol2(mol2_file).getresult()
+        # Check the atoms are the same
+        if mol2.structure.atoms == freq.internal_coord.structure.atoms:
+            # Overwrite the bonds
+            freq.internal_coord.bonds = sorted(mol2.bonds)
+        else:
+            raise Warning('The atoms in mol2 file don\'t match the frequency file\n')
+
+    # If the bonds are not available from file
+    if freq.internal_coord.nbond == 0:
+        # Attempt to generate the bonds
+        print('Warning >>> No bond term was found, generating them internally. ')
+        freq.internal_coord.constructbondsbyHessian(freq.hessian_cartesian)
+        freq.internal_coord.constructbondsbyCovalentRadius()
+
+    if freq.internal_coord.nangle == 0:
+        # Attempt to generate the angles
+        print('Warning >>> No angle term was found, generating them internally. ')
+        freq.internal_coord.constructangles()
+
+    if freq.internal_coord.ntorsion == 0:
+        # Attempt to generate the torsions
+        print('Warning >>> No torsion term was found, generating them internally. ')
+        freq.internal_coord.constructtorsions()
+
+    if freq.internal_coord.nimproper == 0:
+        # Attempt to generate the impropers
+        print('Warning >>> No improper term was found, generating them internally. ')
+        freq.internal_coord.constructimpropers()
+
     GetBondedfromQM(freq)
 
-    for atom in freq.internal_coord.structure:
-        print(atom.show)
+    print('///////////////////////////////////////////////////////////////')
+    #np.set_printoptions(precision=1, suppress=True, threshold=np.inf, linewidth=520)
+    for i, atom in enumerate(freq.internal_coord.structure): print(atom.show)
+    for i, bond in enumerate(freq.internal_coord.bonds): print(i, bond.show)
+    for i, angle in enumerate(freq.internal_coord.angles): print(i, angle.show)
+    for i, torsion in enumerate(freq.internal_coord.torsions): print(i, torsion.show)
+    for i, improper in enumerate(freq.internal_coord.impropers): print(i, improper.show)
+    print('///////////////////////////////////////////////////////////////')
 
-    for i, bond in enumerate(freq.internal_coord.bonds):
-        print(i, bond.show)
-    #for angle in freq.internal_coord.angles:
-    #    print(angle.show)
-    #for torsion in freq.internal_coord.torsions:
-    #    print(torsion.show)
-    print('------------------------------------------------------------')
-    freq.internal_coord._bonds = []
-    freq.internal_coord.constructbondsbyHessian(freq.hessian_cartesian)
-    freq.internal_coord.constructbondsbyCovalentRadius()
-
-    for i, bond in enumerate(freq.internal_coord.bonds):
-        print(i, bond.show)
+    #freq.internal_coord._bonds = []
+    #freq.internal_coord.constructbondsbyHessian(freq.hessian_cartesian)
+    #freq.internal_coord.constructbondsbyCovalentRadius()
 
 if __name__ == '__main__':
     FF_bonded_from_QM()
