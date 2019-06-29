@@ -110,7 +110,9 @@ class ESP(Molecule):
 
         coord = np.array([atom.cord for atom in self.atoms])
         mass = np.array([at.atom_property(query='mass', target='symbol', value=atom.nam) for atom in self.atoms]).reshape(dim_q, 1)
-
+        
+        # TODO dipole function can not be dependent on the mass. 
+        # Change to accept a point (x,y,z) as the refference for dipole calculations
         dipole_wf = self._dipole(coord, qwf, mass)
         dipole_sc = self._dipole(coord, qsc, mass)
 
