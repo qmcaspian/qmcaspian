@@ -1,8 +1,11 @@
-#!/usr/bin/python3.5
+#!/usr/bin/env python3
 
-from parsers import *
+import parsers as ps
 from ff_bonded_from_qm import *
+from resp import *
 import argparse
+from parsers import read
+
 
 def FF_bonded_from_QM():
     """
@@ -28,7 +31,7 @@ def FF_bonded_from_QM():
     # Read the command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("freq", type=str, help="freq file: Formatted checkpoint file of "
-                                                     "freq calculation G09 with \"freq=intmodes\" keyword")
+                                               "freq calculation G09 with \"freq=intmodes\" keyword")
     parser.add_argument("-s", type=str, help="structure file: an optional mol2 file from which the bonds will be read.")
     try:
         args = parser.parse_args()
@@ -39,18 +42,18 @@ def FF_bonded_from_QM():
         return 1
 
     # Read the input frequency calculation checkpoint file
-    freq = parseQM(freq_file, 'G')
+    freq = ps.parseQM(freq_file, 'G')
     freq.internal_coord.bonds.sort()
     freq.internal_coord.angles.sort()
     freq.internal_coord.torsions.sort()
 
     print('------------------------------------------------------------')
     np.set_printoptions(precision=1, suppress=True, threshold=np.inf, linewidth=520)
-    #print(freq.hessian_cartesian)
-    #for i, atom in enumerate(freq.internal_coord.structure): print(atom.show)
-    #for i, bond in enumerate(freq.internal_coord.bonds): print(i, bond.show)
-    #for i, angle in enumerate(freq.internal_coord.angles): print(i, angle.show)
-    #for i, torsion in enumerate(freq.internal_coord.torsions): print(i, torsion.show)
+    # print(freq.hessian_cartesian)
+    # for i, atom in enumerate(freq.internal_coord.structure): print(atom.show)
+    # for i, bond in enumerate(freq.internal_coord.bonds): print(i, bond.show)
+    # for i, angle in enumerate(freq.internal_coord.angles): print(i, angle.show)
+    # for i, torsion in enumerate(freq.internal_coord.torsions): print(i, torsion.show)
     for i, improper in enumerate(freq.internal_coord.impropers): print(i, improper.show)
 
     print('------------------------------------------------------------')
@@ -69,7 +72,7 @@ def FF_bonded_from_QM():
         freq.internal_coord.deleteimpropers()
 
         # Read the mol2 file
-        mol2 = parseMol2(mol2_file).getresult()
+        mol2 = ps.parseMol2(mol2_file).getresult()
         # Check the atoms are the same
         if mol2.structure.atoms == freq.internal_coord.structure.atoms:
             # Overwrite the bonds
@@ -102,7 +105,7 @@ def FF_bonded_from_QM():
     GetBondedfromQM(freq)
 
     print('///////////////////////////////////////////////////////////////')
-    #np.set_printoptions(precision=1, suppress=True, threshold=np.inf, linewidth=520)
+    # np.set_printoptions(precision=1, suppress=True, threshold=np.inf, linewidth=520)
     for i, atom in enumerate(freq.internal_coord.structure): print(atom.show)
     for i, bond in enumerate(freq.internal_coord.bonds): print(i, bond.show)
     for i, angle in enumerate(freq.internal_coord.angles): print(i, angle.show)
@@ -110,9 +113,34 @@ def FF_bonded_from_QM():
     for i, improper in enumerate(freq.internal_coord.impropers): print(i, improper.show)
     print('///////////////////////////////////////////////////////////////')
 
-    #freq.internal_coord._bonds = []
-    #freq.internal_coord.constructbondsbyHessian(freq.hessian_cartesian)
-    #freq.internal_coord.constructbondsbyCovalentRadius()
+    # freq.internal_coord._bonds = []
+    # freq.internal_coord.constructbondsbyHessian(freq.hessian_cartesian)
+    # freq.internal_coord.constructbondsbyCovalentRadius()
+
+
+def RESP_from_QM():
+    # Read the command line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("esp", type=str, help="The input ESP file from Gaussian")
+    parser.add_argument("-pcc", type=str, help="The partial charge constraint file")
+    try:
+        args = parser.parse_args()
+        esp_file = args.esp
+        pcc_file = args.pcc
+
+    except:
+        print('Use -h for flags and argument\n')
+        return 1
+
+    #esp = ps.read_esp(esp_file)
+    #pcc = ps.read_charge_restraints(pcc_file)
+    # for point in esp.points: print(point)
+    esp = ESP()
+    read.esp(esp_file, esp)
+    if pcc_file:
+        read.charge_restraints(pcc_file, esp)
+        #print(esp.symmetry)
+    esp.calculate_charges2(norest=False)
 
 if __name__ == '__main__':
-    FF_bonded_from_QM()
+    RESP_from_QM()

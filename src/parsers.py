@@ -4,12 +4,14 @@ from atom import Atom
 from molecule import Molecule
 from macromolecule import Macromolecule
 from atom_table import atom_property
+from resp import ESP
 from internal_coordinate import *
 import sys
 import os
 import re
 import math
 import numpy as np
+
 
 # TODO create a separate opt object to be returned by the __call__ function of OPTG09
 
@@ -33,6 +35,7 @@ class ParseGaussian(object):
     This class reads the header section of a Gaussian output and initiate a corresponding parser class.
 
     """
+
     def __init__(self, ifile):
         self._f = None
         self._calc = ''
@@ -116,7 +119,8 @@ class OptG09(Macromolecule):
     This class assumes the given file exists and is G09 optimization output. Use the :class:`ParseGaussian` if error
     management is needed.
     """
-# TODO create a separate opt object to be returned by the __call__ function of OPTG09
+
+    # TODO create a separate opt object to be returned by the __call__ function of OPTG09
 
     def __init__(self, ifile):
         Macromolecule.__init__(self, nam=ifile.split('.')[0])
@@ -215,19 +219,22 @@ class OptG09(Macromolecule):
             self.maxDisplacement.insert(0, self.maxDisplacement[0])
             self.averageDisplacement.insert(0, self.averageDisplacement[0])
 
+
 class Freq(object):
     def __init__(self):
         self._method = None
         self.internal_coord = InternalCoordinate()
         self.hessian_cartesian = None
 
+
 class FreqFchkG09():
     Hartree2Kcalmol = 627.509608
     Bohr2Angstrom = 0.529177249
     Rad2Degree = 57.2957795
+
     def __init__(self, ifile, method=None):
         # Sequence of these commands is important. The internal coordinates are created based on the "structure" object.
-        self._natm = self.get_natm(ifile) # To temporarily cash the number of atoms
+        self._natm = self.get_natm(ifile)  # To temporarily cash the number of atoms
         self.freq = Freq()
         self.freq.method = method
         self.get_chrge(ifile)
@@ -252,6 +259,7 @@ class FreqFchkG09():
         np.set_printoptions(precision=1, suppress=True, threshold=np.inf, linewidth=520)
         print(self.hessian_cartesian)
         """
+
     def __call__(self):
         return self.freq
 
@@ -329,13 +337,14 @@ class FreqFchkG09():
             internal_coord_found = False
             for line in f:
                 if re.search(r'Redundant internal dimensions', str(line)):
-                    internal_coord_found =True
+                    internal_coord_found = True
                     break
 
             if internal_coord_found:
                 n_iternal_coords, n_bonds, n_angles, n_torsions = f.readline().split()
-                n_iternal_coords, n_bonds, n_angles, n_torsions = int(n_iternal_coords), int(n_bonds), int(n_angles), int(n_torsions)
-            else: # Get out
+                n_iternal_coords, n_bonds, n_angles, n_torsions = int(n_iternal_coords), int(n_bonds), int(
+                    n_angles), int(n_torsions)
+            else:  # Get out
                 print('Warning >>> The bonded terms were not found in ', ifile)
                 return None
 
@@ -345,7 +354,7 @@ class FreqFchkG09():
                 if re.search(r'Redundant internal coordinate indices', str(line)):
                     internal_coord_found = True
                     n_indices = int(line.split()[6])
-                    lines_to_read = math.ceil(n_indices / 6) # There are 6 indices per line
+                    lines_to_read = math.ceil(n_indices / 6)  # There are 6 indices per line
                     break
 
             # Read internal coordinates indices into a list
@@ -354,17 +363,16 @@ class FreqFchkG09():
                 for i in range(lines_to_read):
                     for indice in f.readline().split():
                         internal_coord_indices.append(int(indice))
-            else: # Get out
+            else:  # Get out
                 print('Warning >>> The internal coordinates were not found')
                 return None
-
 
             # Find the equilibrium values of the internal coordinates
             internal_coord_found = False
             for line in f:
                 if re.search(r'Redundant internal coordinates', line):
                     internal_coord_found = True
-                    lines_to_read = math.ceil(n_iternal_coords / 5) # There are 5 values per line
+                    lines_to_read = math.ceil(n_iternal_coords / 5)  # There are 5 values per line
                     break
 
             # Read the values into a list
@@ -373,7 +381,7 @@ class FreqFchkG09():
                 for i in range(lines_to_read):
                     for val in f.readline().split():
                         internal_coord_val.append(float(val))
-            else: # get out
+            else:  # get out
                 print('Warning >>> The internal coordinates were not found')
                 return None
 
@@ -410,7 +418,8 @@ class FreqFchkG09():
                 atom_j = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[1])
                 atom_k = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[2])
                 atom_l = self.freq.internal_coord.structure.selectbyAtomnum(i_indice[3])
-                i_torsion = Torsion(i=atom_i, j=atom_j, k=atom_k, l=atom_l, t1=(self.Rad2Degree * internal_coord_val[count]))
+                i_torsion = Torsion(i=atom_i, j=atom_j, k=atom_k, l=atom_l,
+                                    t1=(self.Rad2Degree * internal_coord_val[count]))
                 self.freq.internal_coord.addtorsion(i_torsion)
                 count += 1
 
@@ -433,18 +442,19 @@ class FreqFchkG09():
                 for i in range(lines_to_read):
                     for element in f.readline().split():
                         hessian_list.append(float(element))
-            else: # Get out
+            else:  # Get out
                 print('Warning >>> The Cartesian Hessian matrix was not found')
                 return None
 
         dim = self._natm * 3
-        hessian = np.zeros(shape=(dim,dim), dtype=np.float64)
-        i,j = np.tril_indices(dim)
+        hessian = np.zeros(shape=(dim, dim), dtype=np.float64)
+        i, j = np.tril_indices(dim)
         np.set_printoptions(precision=5, suppress=True, threshold=np.inf, linewidth=520)
         hessian[(i, j)] = hessian_list
         hessian[(j, i)] = hessian_list
         hessian *= self.Hartree2Kcalmol / (self.Bohr2Angstrom * self.Bohr2Angstrom)
         self.freq.hessian_cartesian = hessian
+
 
 class parseMol2(object):
     def __init__(self, ifile):
@@ -452,7 +462,6 @@ class parseMol2(object):
         self.get_atoms(ifile)
         self.get_bonds(ifile)
         self.getresult()
-
 
     def get_atoms(self, ifile):
         with open(ifile) as f:
@@ -466,7 +475,7 @@ class parseMol2(object):
 
                 if atom_found:
                     inum, iname, ix, iy, iz, ityp = line.split()[0:6]
-                    self.internal_coord.structure.addatm(Atom(num=inum, nam=iname, x=ix, y=iy, z=iz, typ=ityp[0]))
+                    self.internal_coord.addatm(Atom(num=inum, nam=iname, x=ix, y=iy, z=iz, typ=ityp[0]))
         if not atom_found:
             print('Warning >>> Atom section was not found')
             return None
@@ -484,8 +493,8 @@ class parseMol2(object):
                 if bond_found:
                     i = int(line.split()[1])
                     j = int(line.split()[2])
-                    atom_i = self.internal_coord.structure.selectbyAtomnum(i)
-                    atom_j = self.internal_coord.structure.selectbyAtomnum(j)
+                    atom_i = self.internal_coord.selectbyAtomnum(i)
+                    atom_j = self.internal_coord.selectbyAtomnum(j)
                     dij = np.linalg.norm(np.array(atom_j.cord) - np.array(atom_i.cord))
                     self.internal_coord.addbond(Bond(i=atom_i, j=atom_j, r=dij))
         if not bond_found:
@@ -494,6 +503,265 @@ class parseMol2(object):
 
     def getresult(self):
         return self.internal_coord
+
+
+def read_esp(file, esp_ref=None):
+    Hartree2Kcalmol = 627.509608
+    Bohr2Angstrom = 0.529177249
+
+    if esp_ref is None:
+        esp = ESP()
+    else:
+        esp = esp_ref
+
+    atom_sectiom_found = False
+    with open(file) as f:
+        for line in f:
+            if re.search(r'CHARGE =', str(line)):
+                esp.charge = int(line.split()[2])
+            if re.search(r'ATOMIC COORDINATES AND ESP CHARGES. #ATOMS =', str(line)):
+                atom_sectiom_found = True
+                lines_to_read = int(line.split()[7])
+                break
+
+        if atom_sectiom_found:
+            for i in range(lines_to_read):
+                line = f.readline()
+                atom, x, y, z, charge = str(line.split()[0]), \
+                                        float(line.split()[1].replace('D', 'e')) * Bohr2Angstrom, \
+                                        float(line.split()[2].replace('D', 'e')) * Bohr2Angstrom, \
+                                        float(line.split()[3].replace('D', 'e')) * Bohr2Angstrom, \
+                                        float(line.split()[4].replace('D', 'e'))
+                esp.addatm(Atom(num=(i + 1), nam=atom, x=x, y=y, z=z, typ=atom, charge=charge))
+
+    esp_matrix_found = False
+    with open(file) as f:
+        for line in f:
+            if re.search(r'ESP VALUES AND GRID POINT COORDINATES', str(line)):
+                esp_matrix_found = True
+                numberofpoints = int(line.split()[8])
+                break
+
+        if esp_matrix_found:
+            esp.points = np.zeros((numberofpoints, 4))
+            for point in range(numberofpoints):
+                e, x, y, z = f.readline().split()
+                esp.points[point, :] = float(e.replace('D', 'e')) * Hartree2Kcalmol, \
+                                       float(x.replace('D', 'e')) * Bohr2Angstrom, \
+                                       float(y.replace('D', 'e')) * Bohr2Angstrom, \
+                                       float(z.replace('D', 'e')) * Bohr2Angstrom
+
+    if atom_sectiom_found and esp_matrix_found and esp_ref is None:
+        return esp
+    else:
+        return None
+
+
+class read(object):
+    Hartree2Kcalmol = 627.509608
+    Bohr2Angstrom = 0.529177249
+    Rad2Degree = 57.2957795
+
+    @staticmethod
+    def mol2(ifile):
+        nAtoms = 0
+        nBonds = 0
+        # Return object
+        internal_coord = InternalCoordinate()
+
+        with open(ifile) as f:
+            # Look for the molecule data
+            molecule_info_found = False
+            for line in f:
+                if re.search(r'@<TRIPOS>MOLECULE', str(line)):
+                    molecule_info_found = True
+                    break
+
+            if molecule_info_found:
+                # Skip one line
+                for i in range(2): line = f.readline()
+                nAtoms, nBonds = int(line.split()[0]), int(line.split()[1])
+
+            # Read the atom section
+            f.seek(0)
+            atom_found = False
+            for line in f:
+                if re.search(r'@<TRIPOS>ATOM', str(line)):
+                    atom_found = True
+                    break
+
+            if atom_found:
+                for atom in range(nAtoms):
+                    line = f.readline()
+                    inum, iname, ix, iy, iz, ityp = line.split()[0:6]
+                    internal_coord.addatm(Atom(num=inum, nam=iname, x=ix, y=iy, z=iz, typ=ityp[0]))
+
+            # Read the bond section
+            bond_found = False
+            f.seek(0)
+            for line in f:
+                if re.search(r'@<TRIPOS>BOND', str(line)):
+                    bond_found = True
+                    break
+
+            if bond_found:
+                for bond in range(nBonds):
+                    line = f.readline()
+                    i, j = int(line.split()[1]), int(line.split()[2])
+                    atom_i = internal_coord.selectbyAtomnum(i)
+                    atom_j = internal_coord.selectbyAtomnum(j)
+                    dij = np.linalg.norm(np.array(atom_j.cord) - np.array(atom_i.cord))
+                    internal_coord.addbond(Bond(i=atom_i, j=atom_j, r=dij))
+
+        if atom_found and bond_found:
+            return internal_coord
+        elif atom_found and not bond_found:
+            print('Warning >>> Bond section was not found')
+            return internal_coord
+        else:
+            print('Warning >>> Atom section was not found')
+            return None
+
+
+    @staticmethod
+    def esp(file, iESP=None):
+
+        if iESP is None:
+            esp = ESP()
+        elif type(iESP) is ESP:
+            esp = iESP
+        else:
+            raise ValueError('Error >>> iESP should be an instance of ESP class')
+
+        atom_section_found = False
+        lines_to_read = 0
+
+        with open(file) as f:
+            for line in f:
+                if re.search(r'CHARGE =', str(line)):
+                    esp.charge = int(line.split()[2])
+                if re.search(r'ATOMIC COORDINATES AND ESP CHARGES. #ATOMS =', str(line)):
+                    atom_section_found = True
+                    lines_to_read = int(line.split()[7])
+                    break
+
+            if atom_section_found:
+                for i in range(lines_to_read):
+                    line = f.readline()
+                    atom, x, y, z, charge = str(line.split()[0]), \
+                                            float(line.split()[1].replace('D', 'e')) * read.Bohr2Angstrom, \
+                                            float(line.split()[2].replace('D', 'e')) * read.Bohr2Angstrom, \
+                                            float(line.split()[3].replace('D', 'e')) * read.Bohr2Angstrom, \
+                                            float(line.split()[4].replace('D', 'e'))
+                    esp.addatm(Atom(num=(i + 1), nam=atom, x=x, y=y, z=z, typ=atom, charge=charge))
+
+        esp_matrix_found = False
+        number_of_points = 0
+
+        with open(file) as f:
+            for line in f:
+                if re.search(r'ESP VALUES AND GRID POINT COORDINATES', str(line)):
+                    esp_matrix_found = True
+                    number_of_points = int(line.split()[8])
+                    break
+
+            if esp_matrix_found:
+                esp.points = np.zeros((number_of_points, 4))
+                for point in range(number_of_points):
+                    e, x, y, z = f.readline().split()
+                    esp.points[point, :] = float(e.replace('D', 'e')) * read.Hartree2Kcalmol, \
+                                           float(x.replace('D', 'e')) * read.Bohr2Angstrom, \
+                                           float(y.replace('D', 'e')) * read.Bohr2Angstrom, \
+                                           float(z.replace('D', 'e')) * read.Bohr2Angstrom
+
+        if atom_section_found and esp_matrix_found and iESP is None:
+            return esp
+        elif atom_section_found and esp_matrix_found and iESP is not None:
+            return None
+        else:
+            print("Error >>> The atom section or the ESP grid was not found.")
+            return None
+
+    @staticmethod
+    def charge_restraints(file, iesp):
+
+        try:
+             # Check the inputs
+            if type(iesp) is not ESP:
+                raise ValueError('Error >>> read.charge_restraints() needs a ESP object as input')
+
+        except ValueError as error:
+            print(error.args)
+            return None
+
+        with open(file) as f:
+
+            # find the charge restraints
+            restraints_found = False
+            lines_to_read = 0
+            for line in f:
+                if re.search(r'CONSTRAINTS', str(line), re.IGNORECASE):
+                    restraints_found = True
+                    for word in line.split():
+                        if word.isdigit():
+                            lines_to_read = int(word)
+                            break
+                if restraints_found:
+                    break
+
+            if restraints_found and lines_to_read > 0:
+                restraints = []
+                for i in range(lines_to_read):
+                    line = f.readline()
+                    try:
+                        atom_num, charge = int(line.split()[0]), float(line.split()[1])
+                        if atom_num not in [i[0] for i in restraints]:
+                            restraints.append([atom_num, charge])
+                    except ValueError as error:
+                        print('Could not read the charge restraints at line: ' + str(i+1))
+                iesp.restraints = restraints
+            else:
+                # Just give a notification and continue for the symmetry section
+                print("Warning >>> No charge restraints were not found.")
+
+            # find the charge symmetry.
+            f.seek(0)
+            symmetry_found = False
+            lines_to_read = 0
+            for line in f:
+                if re.search(r'SYMMETRY', str(line), re.IGNORECASE):
+                    symmetry_found = True
+                    for word in line.split():
+                        if word.isdigit():
+                            lines_to_read = int(word)
+                            break
+                if symmetry_found:
+                    break
+
+            if symmetry_found and lines_to_read > 0:
+                symmetry = []
+                for i in range(lines_to_read):
+                    line = f.readline()
+                    row = []
+
+                    for atom_num in line.split():
+                        if not atom_num.isdigit():
+                            break
+                        num = int(atom_num)
+                        if num in [atom for row in symmetry for atom in row] or num in row:
+                            print("Error >>> Repeated atom in the symmetry section, line: " + str(i + 1))
+                            break
+                        else:
+                            row.append(num)
+                    if len(row) > 1:
+                        symmetry.append(sorted(row))
+                    else:
+                        print("Error >>> Bad charge symmetries at line: " + str(i + 1))
+                        break
+                iesp.symmetry = symmetry
+            else:
+                # Just give a notification and continue for the symmetry section
+                print('Warning >>> No symmetry restraints were not found.')
 
 
 " An example of class usage"

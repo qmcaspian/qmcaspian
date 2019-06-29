@@ -25,7 +25,7 @@ class Atom(object):
     "tolerance value for float comparison"
     tolerance = 1E-5
 
-    def __init__(self, num=0, nam='ND', x=0.0, y=0.0, z=0.0, typ='ND'):
+    def __init__(self, num=0, nam='ND', x=0.0, y=0.0, z=0.0, typ='ND', charge=0.0):
         """
         Args:
            num (int): atom number
@@ -40,6 +40,7 @@ class Atom(object):
         self._num = int(num)
         self._nam = str(nam)
         self._typ = str(typ)
+        self._charge =float(charge)
 
     def __eq__(self, other):
         """
@@ -70,6 +71,9 @@ class Atom(object):
     def __le__(self, other):
         result = self.__gt__(other)
         return not result
+
+    def __hash__(self):
+        return hash(self.nam)
 
     def sameas(self, atom):
         """
@@ -231,6 +235,14 @@ class Atom(object):
             raise ValueError("Atom type could not be converted to string")
 
     @property
+    def charge(self):
+        return self._charge
+
+    @charge.setter
+    def charge(self, charge):
+        self._charge = float(charge)
+
+    @property
     def show(self):
         """
             Returns num, nam, x, y, z, typ.
@@ -240,7 +252,7 @@ class Atom(object):
             [121, 'ND', 13.015, 20.145, 21.457, 'O']
         """
 
-        return [self._num, self._nam, self._x, self._y, self._z, self._typ]
+        return [self._num, self._nam, self._x, self._y, self._z, self._typ, self._charge]
 
     @property
     def copy(self):

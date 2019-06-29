@@ -1,0 +1,8 @@
+#CONSTRAINTS 1
+10         1.5    !Atom number, target charges
+
+#SYMMETRY 1
+12  14      !each line lists the atom numbers that have equal charge
+
+
+

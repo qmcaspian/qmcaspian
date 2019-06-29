@@ -168,7 +168,7 @@ class Molecule(object):
             >>> molecule_O4.natm
             4
         """
-        return self._natm
+        return len(self._atms)
 
     @property
     def atoms(self):

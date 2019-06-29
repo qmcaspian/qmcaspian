@@ -1,4 +1,4 @@
-#!/bin/bash/python3
+#!/usr/bin/env python3
 
 from parsers import FreqFchkG09
 from internal_coordinate import *
