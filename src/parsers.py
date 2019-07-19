@@ -4,6 +4,7 @@ from atom import Atom
 from molecule import Molecule
 from macromolecule import Macromolecule
 from atom_table import atom_property
+from graph import *
 from resp import ESP
 from internal_coordinate import *
 import sys
@@ -607,9 +608,17 @@ class read(object):
             if bond_found:
                 for bond in range(nBonds):
                     line = f.readline()
-                    i, j = int(line.split()[1]), int(line.split()[2])
+                    i, j, bond_order = int(line.split()[1]), int(line.split()[2]), str(line.split()[3])
                     atom_i = internal_coord.selectbyAtomnum(i)
                     atom_j = internal_coord.selectbyAtomnum(j)
+                    try:
+                        bond_order = float(bond_order)
+                    except ValueError:
+                        # Keeping support for Mol2 Ar bond type
+                        if bond_order == 'Ar':
+                            bond_order = 1.5
+                        else:
+                            print('Warning >>> Bond order ', bond_order, ' between ', atom_i.num, '-', atom_j.num, 'is not supported, change it to numerical')
                     dij = np.linalg.norm(np.array(atom_j.cord) - np.array(atom_i.cord))
                     internal_coord.addbond(Bond(i=atom_i, j=atom_j, r=dij))
 
@@ -762,6 +771,18 @@ class read(object):
             else:
                 # Just give a notification and continue for the symmetry section
                 print('Warning >>> No symmetry restraints were not found.')
+
+class write(object):
+
+    @staticmethod
+    def mol2(data, name):
+        if type(data) is Graph:
+            write._graph2mol2(data, name)
+
+    @staticmethod
+    def _graph2mol2(data, name):
+        pass
+
 
 
 " An example of class usage"

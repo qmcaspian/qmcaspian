@@ -9,378 +9,8 @@ import pickle
 from atom import Atom
 from molecule import Molecule
 from atom_table import *
+#from graph import *
 import itertools as it
-
-
-class Node(object):
-    def __init__(self, atom):
-        self._atom = None
-        self._parents = []
-        self._children = []
-        self._neighbors = []
-        self.visited = False
-        self.head_flag = False
-        self.color = 0
-        self.number_of_cycles = 0
-        self.ring_id = []
-
-        self._atom = atom
-
-    def __hash__(self):
-        return self.atom.num
-
-    @property
-    def atom(self):
-        return self._atom
-
-    @atom.setter
-    def atom(self, atom):
-        if type(atom) is Atom:
-            self._atom = atom
-        else:
-            raise ValueError('Error >>> Pass an Atom object')
-
-    @property
-    def number_of_neighbor(self):
-        return len(self._neighbors)
-
-    @property
-    def neighbors(self):
-        return self._neighbors
-
-    @neighbors.setter
-    def neighbors(self, neighbor):
-        if type(neighbor) is Node:
-            self._neighbors.append(neighbor)
-        else:
-            raise ValueError('Error >>> Pass a Node object')
-
-    @property
-    def number_of_parents(self):
-        return len(self._parents)
-
-    @property
-    def parents(self):
-        return self._parents
-
-    @parents.setter
-    def parents(self, parents):
-        if any([type(node) != Node for node in parents]):
-            raise ValueError('Pass a list of Node objects')
-        else:
-            # TODO should be log
-            # if self._parents:
-            #    print('Warning >>> Overwriting the node\'s parents')
-            self._parents = parents
-
-    def add_parent(self, parent):
-        if type(parent) is Node:
-            self._parents.append(parent)
-        else:
-            raise ValueError('Error >>> Pass a Node object')
-
-    @property
-    def number_of_children(self):
-        return len(self._children)
-
-    @property
-    def children(self):
-        return self._children
-
-    @children.setter
-    def children(self, children):
-        if any([type(node) != Node for node in children]):
-            raise ValueError('Pass a list of Node objects')
-        else:
-            # TODO should be log
-            # if self._children:
-            #    print('Warning >>> Overwriting the node\'s children')
-            self._children = children
-
-    def add_children(self, child):
-        if type(child) is Node:
-            self._children.append(child)
-        else:
-            raise ValueError('Error >>> Pass a Node object')
-
-
-class Graph(object):
-    def __init__(self):
-        self._nodes = None
-        self._head = None
-        self.count = 0
-        self.rings = {}
-
-    @property
-    def head(self):
-        return self._head
-
-    @head.setter
-    def head(self, head):
-        if type(head) is Node:
-            if head in self.nodes:
-                # First rest the previous head node flag if already defined
-                if self._head:
-                    self._head.head_flag = False
-            # Point to the new head
-            self._head = head
-            self._head.head_flag = True
-        else:
-            raise ValueError('head should be a Node object')
-
-    @property
-    def number_of_nodes(self):
-        return len(self._nodes)
-
-    @property
-    def nodes(self):
-        return self._nodes
-
-    @nodes.setter
-    def nodes(self, nodes):
-        if any([type(node) != Node for node in nodes]):
-            raise ValueError('Pass a list of Node objects')
-        else:
-            if self._nodes:
-                print('Warning >>> Overwriting the graph Nodes')
-            self._nodes = nodes
-
-    def add_node(self, node):
-        if type(node) is Node:
-            self._nodes.append(node)
-        else:
-            raise ValueError('Error >>> Pass a Node object')
-
-    def reset_visited(self):
-        # Reset the vested flag
-        self.count = 0
-        for node in self.nodes:
-            node.visited = False
-            node.color = 0
-
-    def reset_tree(self):
-        # Reset the vested flag
-        self.count = 0
-        for node in self.nodes:
-            node.visited = False
-            node.parents = []
-            node.children = []
-
-    def make_tree_DFS(self, I):
-
-        # Reset only for the first round
-        if I.head_flag:
-            self.reset_visited()
-            I.visited = True
-
-        if I not in self.nodes:
-            print('head atom not found in graph nodes')
-            return None
-
-        for my_neighbor in I.neighbors:
-            # print('call', self.count)
-            # print('I', I.visited, I.atom.num, ('parent: ', [p.atom.num for p in I.parents], 'children: ', [c.atom.num for c in I.children]),
-            #      ' neighbor: ', my_neighbor.visited, my_neighbor.atom.num, ('parent: ', [p.atom.num for p in my_neighbor.parents], 'children: ', [c.atom.num for c in my_neighbor.children]))
-            self.count += 1
-
-            if (I not in my_neighbor.parents) and (I not in my_neighbor.children):
-                my_neighbor.add_parent(I)
-
-            if (my_neighbor not in I.parents) and (my_neighbor not in I.children):
-                I.add_children(my_neighbor)
-
-            if not my_neighbor.visited:
-                my_neighbor.visited = True
-                self.make_tree_DFS(my_neighbor)
-
-    def make_tree_BFS(self, head):
-
-        if head not in self.nodes:
-            print('the head atom not found in graph nodes')
-            return None
-
-        # reset
-        self.reset_tree()
-
-        # Search
-        search_current = [head]
-        search_next = []
-        while search_current:
-            # print(self.count)
-            for I in search_current:
-                if not I.visited:
-                    I.visited = True
-                    for my_neighbor in I.neighbors:
-                        if (my_neighbor not in I.parents) and (my_neighbor not in I.children):
-                            I.add_children(my_neighbor)
-                        if (I not in my_neighbor.parents) and (I not in my_neighbor.children):
-                            my_neighbor.add_parent(I)
-                        search_next.append(my_neighbor)
-
-                        # print('I', I.visited, I.atom.num, ('parent: ', [p.atom.num for p in I.parents], 'children: ', [c.atom.num for c in I.children]),
-                        #    ' neighbor: ', my_neighbor.visited, my_neighbor.atom.num, ('parent: ', [p.atom.num for p in my_neighbor.parents], 'children: ', [c.atom.num for c in my_neighbor.children]))
-            search_current = search_next
-            search_next = []
-            self.count += 1
-
-    # TODO Not working
-    def get_rings(self, node=None):
-
-        if not self.nodes:
-            print('Error >>> to find ring graph need at least three nodes, None fond')
-
-        elif self.number_of_nodes < 3:
-            print('Error >>> to find ring graph need at least three nodes,', self.number_of_nodes, ' found.')
-
-        self.reset_visited()
-        self.reset_tree()
-        self.number_of_cycles = 0
-
-        self.number_of_cycles
-        node = self.head
-        parent = Node(Atom(num=0)) # Dummy
-        self.dfs_cycle(node, parent)
-
-    # TODO Not working
-    def dfs_cycle(self, node, parent):
-        print('n', node.atom.num, 'with color', node.color ,'p', parent.atom.num)
-        # already (completely) visited vertex.
-        if node.color == 2:
-            return
-
-        # seen vertex, but was not completely visited -> cycle detected.
-        # backtrack based on parents to find the complete cycle.
-        if node.color == 1:
-
-            self.number_of_cycles += 1
-            cur = parent
-            cur.ring.append(self.number_of_cycles)
-            print('Start back track', cur.atom.num, cur.ring, 'parent', parent.atom.num)
-            # backtrack the vertex which are in the current cycle that is found
-            count = 1
-            while cur != node:
-                cur = cur.parents[-1]
-                cur.ring.append(self.number_of_cycles)
-                print('back track', cur.atom.num,'ring', cur.ring, 'p', [node.atom.num for node in cur.parents])
-                count += 1
-            return
-
-        # Using overwrite function to avoid aappending
-        node.add_parent(parent)
-
-        #partially visited.
-        node.color = 1
-
-
-        for neighbor in node.neighbors:
-            # if it has not been visited previously
-            if neighbor not in node.parents:
-                self.dfs_cycle(neighbor, node)
-
-        # completely visited.
-        node.color = 2
-
-    def get_rings2(self, depth=8):
-        max_depth = depth
-        # Find the shortest circuit for each node
-        rings = {}
-        for node in self.nodes:
-            if node.number_of_neighbor < 2:
-                continue # Skip the leaves
-            # initialize
-            rings[node] = []
-            searched_path = []
-            node_i = node
-            node_reff = node
-            parent_i = Node(Atom(num=0)) # Dummy
-            #print(node_i.atom.num, '-----------')
-            #print('searchin ring for atom ', node_reff.atom.num )
-            self.dfs_cycle2(node_reff, node_i, parent_i, searched_path, rings, max_depth)
-
-        # Find the unique rings
-
-        rings_unique = set()
-        node_superset = set()
-
-        for node, node_rings in rings.items():
-            # the previous cycle
-            print('node_superset', [[node.atom.num for node in node_superset]])
-            node_superset = set()
-            l = min(map(len, node_rings))
-            for iring in node_rings:
-                if len(iring) <= l:
-                    node_superset.update(iring)
-                if iring.issubset(node_superset):
-                    pass
-                print(node.atom.num, '#r: ',l, [node.atom.num for node in iring])
-
-            #rings_unique.add(frozenset(node for node in ring))
-
-        exit()
-        # Give the rings ID and save them in the graph.rings
-        # Set the ring ID each node
-        for i, ring in enumerate(rings_unique):
-            self.rings[i] = ring
-            for node in self.nodes:
-                if node in ring:
-                    node.ring_id.append(i)
-            #print(len(ring), [node.atom.num for node in ring])
-
-    def dfs_cycle2(self, node_reff, node_i, parent_i, searched_path, rings, max_depth):
-        max_depth -= 1
-        # pass by value
-        current_searched = searched_path.copy()
-        current_searched.append(node_i)
-        #print('n', node_i.atom.num, 'p', parent_i.atom.num, 'path', [node.atom.num for node in current_searched])
-        for neighbor in node_i.neighbors:
-            if neighbor == node_reff and neighbor != parent_i:
-                found_ring = set(current_searched)
-                if found_ring not in rings[node_reff]:
-                    rings[node_reff].append(found_ring)
-                    return
-
-                """
-                if len(current_searched) < len(rings[node_reff]):
-                    #print('ring->', [node.atom.num for node in current_searched])
-                    rings[node_reff] = current_searched
-                    return
-                """
-            if neighbor not in current_searched and neighbor.number_of_neighbor > 1 and max_depth > 0:
-                self.dfs_cycle2(node_reff, neighbor, node_i, current_searched, rings, max_depth)
-
-    @staticmethod
-    def get_similarity(mol1, mol2):
-        # TODO make sure it is a tree
-
-        score_max = 0
-        score_node_pair_matrix = dict()
-
-        for node_m2 in mol2.children:
-            for node_m1 in mol1.children:
-
-                score_node_pair_matrix[(node_m2, node_m1)] = 0
-                # Check nodes
-                if node_m1.atom.typ == node_m2.atom.typ:
-                    score_node_pair_matrix[(node_m2, node_m1)] +=1
-                    #print([i for i in score_node_pair_matrix.items()])
-                    #print(node_m2.atom.num, node_m1.atom.num)
-                # Check the sub trees
-                score_node_pair_matrix[(node_m2, node_m1)] += Graph.get_similarity(node_m1, node_m2)
-
-        #print([(key[0].atom.nam, key[-1].atom.nam, value) for key, value in score_node_pair_matrix.items()])
-        #print(len([(key[0].atom.num, key[-1].atom.num, value) for key, value in score_node_pair_matrix.items()]))
-        # Get the combination of nodes that maximize the score
-        for permutation in it.permutations(mol1.children):
-            # Calculate the score with this mapping
-            score_tm = 0
-            for node_pair in zip(mol2.children, permutation):
-                score_tm += score_node_pair_matrix[node_pair]
-
-            if score_tm > score_max:
-                score_max = score_tm
-        #print(score_max)
-        return score_max
-
 
 class atom_type_library(object):
 
@@ -413,7 +43,7 @@ class Bond(object):
     bond i:  O1 H2 1200.0 1.4
     """
 
-    def __init__(self, i=Atom, j=Atom, f=0.0, r=0.0):
+    def __init__(self, i=Atom, j=Atom, f=0.0, r=0.0, order=0.0):
         self._i = None
         self._j = None
         # Call the setter to check the input type
@@ -421,6 +51,7 @@ class Bond(object):
         self.j = j
         self._r = float(r)
         self._f = float(f)
+        self._order = float(order)
 
     def __eq__(self, other):
         """
@@ -493,6 +124,14 @@ class Bond(object):
     @r.setter
     def r(self, r):
         self._r = float(r)
+
+    @property
+    def order(self):
+        return self._i
+
+    @order.setter
+    def order(self, order):
+            self._order = float(order)
 
     @property
     def show(self):
@@ -1154,7 +793,7 @@ class InternalCoordinate(Molecule):
             self.bonds.sort()
 
         else:
-            print("Error >>> at least 2 atoms are needed to construct bond terms. Number of atoms are: ", self.natm)
+            print("Error >>> at least 2 atoms are needed to construct_graph bond terms. Number of atoms are: ", self.natm)
 
     def constructbondsbyHessian(self, hessian):
         if self.natm > 1:
@@ -1188,7 +827,7 @@ class InternalCoordinate(Molecule):
             self.bonds.sort()
 
         else:
-            print("Error >>> at least 2 atoms are needed to construct bond terms. Number of atoms are: ", self.natm)
+            print("Error >>> at least 2 atoms are needed to construct_graph bond terms. Number of atoms are: ", self.natm)
 
     @property
     def nangle(self):
@@ -1277,7 +916,7 @@ class InternalCoordinate(Molecule):
                                 self.addangle(angle)
             self.angles.sort()
         else:
-            print("Error >>> at least bonds are needed to construct angle terms. Number of bonds are: ", self.nbond)
+            print("Error >>> at least bonds are needed to construct_graph angle terms. Number of bonds are: ", self.nbond)
 
     @property
     def ntorsion(self):
@@ -1386,7 +1025,7 @@ class InternalCoordinate(Molecule):
 
             self.torsions.sort()
         else:
-            print("Error >>> at least 2 angles are needed to construct torsion terms. Number of angles are: ",
+            print("Error >>> at least 2 angles are needed to construct_graph torsion terms. Number of angles are: ",
                   self.nangle)
 
     @property
@@ -1501,9 +1140,10 @@ class InternalCoordinate(Molecule):
                         self.addimproper(Improper(i=atom_i, j=atom_list[0], k=atom_list[1], l=atom_list[2], t=t))
 
         else:
-            print("Error >>> at least 2 angles are needed to construct improper terms. Number of angles are: ",
+            print("Error >>> at least 2 angles are needed to construct_graph improper terms. Number of angles are: ",
                   self.nangle)
 
+    """
     @property
     def graph(self):
         return self._graph
@@ -1524,7 +1164,7 @@ class InternalCoordinate(Molecule):
 
     def tree(self, head):
         if not self.graph:
-            print('Error, >>> To construct a tree, first a graph should be made')
+            print('Error, >>> To construct_graph a tree, first a graph should be made')
             return None
 
         # Reset the head node
@@ -1555,7 +1195,7 @@ class InternalCoordinate(Molecule):
         # Make the tree
         #for node in self.graph.nodes:
         #    print([p.atom.num for p in node.parents], '->', node.atom.num, '->', [c.atom.num for c in node.children])
-
+    """
 if __name__ == '__main__':
 
     a = Atom(num=1, nam='H')
