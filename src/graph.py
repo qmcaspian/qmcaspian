@@ -26,6 +26,7 @@ class Node(object):
         self._parents = []
         self._children = []
         self._neighbors = []
+        self._bond_order = dict()
         self.visited = False
         self.head_flag = False
         #self.color = 0
@@ -46,7 +47,6 @@ class Node(object):
         return self._atom
 
     @atom.setter
-
     def atom(self, atom):
         if type(atom) is Atom:
             self._atom = atom
@@ -59,6 +59,33 @@ class Node(object):
         Returns the number of neighrs of the node.
         """
         return len(self._neighbors)
+
+    def bond_order(self, neighbor, value=None):
+        """
+        Returns the bond_order of the bond the node and its neighbor.
+        :parameter neighbor
+        """
+        # Return bond order
+        if value is None:
+
+            if type(neighbor) is not Node:
+                print("Error >>> Expecting a Node object, received a ", type(neighbor))
+                return None
+
+            if neighbor not in self.neighbors:
+                print("Error >>> The neighbor was not found in the node's neighbor list ", type(neighbor))
+                return None
+
+            return self._bond_order[neighbor]
+
+        # Set bond order
+        else:
+            try:
+                value = float(value)
+            except ValueError:
+                print("Error >>> Bond order should be a float. Recieved ", value)
+                return None
+            self._bond_order[neighbor] = value
 
     @property
     def neighbors(self):
@@ -139,19 +166,28 @@ class Graph(object):
        - **Parm atom** (:class:`InternalCoordinate`):      The input atom object.
        >>> print('Write the example')
     """
-    def __init__(self, internalCoord=None):
+    def __init__(self, internalcoord=None):
         self._nodes = None
         self._head = None
+        self._tree = False
+        self._name = None
         #self.count = 0
         self.rings = {}
         #
-        if internalCoord:
-            self.construct_graph(internalCoord)
+        if internalcoord:
+            self.construct_graph(internalcoord)
             self.set_rings()
+
+    def __str__(self):
+        return self.name
 
     @property
     def head(self):
         return self._head
+
+    @property
+    def tree(self):
+        return self._tree
 
     @head.setter
     def head(self, head):
@@ -165,6 +201,14 @@ class Graph(object):
             self._head.head_flag = True
         else:
             raise ValueError('head should be a Node object')
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
 
     @property
     def number_of_nodes(self):
@@ -196,16 +240,24 @@ class Graph(object):
             return None
 
         # overwrite the references
-        self._nodes = []
-
+        #self._nodes = []
+        self.name = internalcoord.nam
         # Populate the nodes
-        self._nodes = [Node(atom) for atom in internalcoord.atoms]
+        self.nodes = [Node(atom) for atom in internalcoord.atoms]
 
         # Find the neighbor list of each node based on the bonds
-        for node_i in self._nodes:
-            for node_j in self._nodes:
-                if Bond(node_i.atom, node_j.atom) in internalcoord.bonds:
-                    node_i.neighbors = node_j
+        for node_i in self.nodes:
+            for node_j in self.nodes:
+                ibond = Bond(node_i.atom, node_j.atom)
+                if ibond in internalcoord.bonds:
+                    # Get the actual bond in a list format
+                    ibond = internalcoord.selectbond(Bond(node_i.atom, node_j.atom))
+                    if len(ibond) == 1:
+                        node_i.neighbors = node_j
+                        node_i._bond_order[node_j] = ibond[0].order
+                        #print(ibond[0].order, "**")
+                    else:
+                        print("Error >>> atoms ", node_i.atom.num, node_j.atom.num, " seems to have repeated bond definitions")
 
     def reset_visited(self):
         # Reset the vested flag
@@ -222,6 +274,7 @@ class Graph(object):
         # Reset the flag
         #self.count = 0
         self._head = None
+        self._tree = False
         for node in self.nodes:
             node.visited = False
             node.head_flag = False
@@ -244,6 +297,8 @@ class Graph(object):
             self._tree_DFS(head)
         else:
             self._tree_BFS(head)
+
+        self._tree = True
 
     def _tree_DFS(self, I):
 
@@ -290,6 +345,91 @@ class Graph(object):
             search_current = search_next
             search_next = []
             #self.count += 1
+
+    def select_by_atom_num(self, atom_num):
+
+        # Check the input
+        if type(atom_num) is not int:
+            print("Error >>> an integer expected, a ", type(atom_num), " is given.")
+            return None
+
+        for node in self.nodes:
+            if node.atom.num == atom_num:
+                return node
+
+        # If we get here the node was not found.
+        print("Warn >>> the atom number ", atom_num, " was not found.")
+        return None
+
+    def prune(self, node):
+
+        # Check the input
+        if type(node) is not Node:
+            print("Error >>> a node is expected. A ", type(node), " is given.")
+            return None
+
+        # Check the tree.
+        if not self.tree:
+            print("Error >>> pruning can only be performed on a tree")
+            return None
+
+        # Check the head
+        if node == self.head:
+            print("Error >>> the head atom can not be pruned.")
+            return None
+
+        # Check node is in the tree
+        if node not in self.nodes:
+            print("Error >>> the node was not found.")
+            return None
+
+        # initialize
+        next_search = []
+        current_search = node.children
+        nodes_to_delete = [node]
+
+        # Do a BFS to sweep the tree.
+        while current_search:
+            for cnode in current_search:
+                if cnode not in nodes_to_delete:
+                    nodes_to_delete.append(cnode)
+                for child in cnode.children:
+                    if child not in current_search and child not in next_search:
+                        next_search.append(child)
+            current_search = next_search
+            next_search = []
+
+        # delete the nodes
+        for node in nodes_to_delete:
+            self.delete(node)
+
+    def delete(self, node):
+
+        # Check the input
+        if type(node) is not Node:
+            print("Error >>> a node is expected. A ", type(node), " is given.")
+            return None
+
+        # Check node is in the graph
+        if node not in self.nodes:
+            print("Error >>> the node was not found.")
+            return None
+
+        # Remove the node from the neighbor list of the neighboring nodes.
+        for node_neighbor in node.neighbors:
+            node_neighbor.neighbors.remove(node)
+            node_neighbor._bond_order.pop(node)
+
+        # Remove the node from the children list of its parents.
+        for node_parent in node.parents:
+            node_parent.children.remove(node)
+
+        # Remove the node from the parent list of its children.
+        for node_child in node.children:
+            node_child.parents.remove(node)
+
+        # Remove the node itself
+        self._nodes.remove(node)
 
     def set_rings(self, depth=8):
         """
@@ -371,8 +511,8 @@ class Graph(object):
                 self._find_cycle_DFS(node_reff, neighbor, node_i, current_searched, rings, max_depth)
 
     def score(self, other):
-        if not self.head or not other.head:
-            print('Error >>> To get the similarity score, construct the tree structure')
+        if not self.tree or not other.tree:
+            print('Error >>> To get the similarity score, first construct the tree structure.')
             return None
         else:
             return Graph.get_score(self.head, other.head)
@@ -437,3 +577,80 @@ class Graph(object):
         #print(score_max)
         return score_max
 
+    @property
+    def bonds(self):
+        bonds = []
+        for node in self.nodes:
+            for neighbor in node.neighbors:
+                ibond = Bond(i=node.atom, j=neighbor.atom, order=node.bond_order(neighbor))
+                if ibond not in bonds:
+                    bonds.append(ibond)
+        bonds.sort()
+        return bonds
+
+
+class Fragment(Graph):
+    ForceFileds = ['UFF', 'OPLS', 'AMBER']
+
+    def __init__(self, internalcoord, name):
+        super().__init__(internalcoord)
+        self._name = name
+        self._atom_type = dict()
+
+    def __str__(self):
+        return self.name
+
+
+    def atom_type(self, forcefield=None, value=None):
+
+        # Return the atom type definition as a list of lists.
+        if forcefield is None and value is None:
+            return [[ff, typ] for ff, typ in self._atom_type.items()]
+
+        # Return the atom type of the given force field
+        elif forcefield is not None and value is None:
+            return self._atom_type[forcefield]
+
+        # Set the force field atom type
+        elif forcefield is not None and value is not None:
+            self._atom_type[forcefield] = value
+
+        # Default
+        else:
+            print("Error >>> invalid arguments for the atom type function")
+            return None
+
+    @property
+    def fragment(self):
+        # Check whether the fragment meet the minimum requirement.
+        finished = True
+
+        # Check force field definition
+        try:
+            # Check the minimum FF definition (UUF) exists.
+            if len(self._atom_type['UFF']) == 0:
+                print("Warn >>> no UFF atom type is set.")
+                finished = False
+        except KeyError:
+            print("Warn >>> No atom type is set.")
+            finished = False
+
+        # Check the structure
+        if not self.tree:
+            print("Warn >>> the head atom is not set.")
+            finished = False
+
+        return finished
+
+
+class Fragment_Library(object):
+    def __init__(self, name):
+        self.name = str(name)
+        self.element = dict()
+
+    def __str__(self):
+        return self.name
+
+    def __iter__(self):
+        for element, fragment in self.element.items():
+            yield element, fragment

@@ -50,6 +50,7 @@ class Molecule(object):
         self._head = None
         self._tail = None
         self._atms = []
+        self._formal_charge = 0
         if head is not None: self.head = head
         if tail is not None: self.tail = tail
         if atms is not None: self.addatm(atms)
@@ -228,6 +229,24 @@ class Molecule(object):
             return select[0]
         else:
             return select
+
+    @property
+    def current_charge(self):
+        """
+        Returns the sum of atomic partial charges.
+        """
+        return sum([atom.charge for atom in self.atoms])
+
+    @property
+    def formal_charge(self):
+        """
+        Sets/Returns Molecule Formal Charge.
+        """
+        return self._formal_charge
+
+    @formal_charge.setter
+    def formal_charge(self, charge):
+        self._formal_charge = charge
 
     @property
     def head(self):

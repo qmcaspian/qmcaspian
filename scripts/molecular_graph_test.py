@@ -47,6 +47,11 @@ def molecular_graph_test():
     finish =time.time()
     print(finish-start)
 
+    for node in mol1_graph.nodes:
+        print(node.atom.num, "--------------")
+        for neighbor in node.neighbors:
+            print(neighbor.atom.num, node._bond_order[neighbor])
+    #ps.write.mol2(mol1_graph, 'M1_test')
 
 if __name__ == '__main__':
     molecular_graph_test()

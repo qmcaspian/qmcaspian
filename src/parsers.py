@@ -567,8 +567,8 @@ class read(object):
     def mol2(ifile):
         nAtoms = 0
         nBonds = 0
-        # Return object
-        internal_coord = InternalCoordinate()
+        nSubStructures = 0
+        internal_coord = InternalCoordinate() # Return object
 
         with open(ifile) as f:
             # Look for the molecule data
@@ -579,9 +579,22 @@ class read(object):
                     break
 
             if molecule_info_found:
-                # Skip one line
-                for i in range(2): line = f.readline()
-                nAtoms, nBonds = int(line.split()[0]), int(line.split()[1])
+                # Read molecule name
+                internal_coord.nam = f.readline().strip()
+                # Read number of atom, bond, and substructures
+                line = f.readline().split()
+                if len(line) == 1:
+                    nAtoms = int(line[0])
+                if len(line) == 2:
+                    nAtoms, nBonds = int(line[0]), int(line[1])
+                if len(line) >= 3:
+                    nAtoms, nBonds, nSubStructures = int(line[0]), int(line[1]), int(line[2])
+
+            # Make sure the file contains only one residue/molecule.
+            if nSubStructures > 1:
+                print("Error >>> The ", ifile, " file contain multiple residues/molecules")
+                print("This is not supported, the mole2 are strictly used for structures with single substructure.")
+                return None
 
             # Read the atom section
             f.seek(0)
@@ -593,9 +606,26 @@ class read(object):
 
             if atom_found:
                 for atom in range(nAtoms):
-                    line = f.readline()
-                    inum, iname, ix, iy, iz, ityp = line.split()[0:6]
-                    internal_coord.addatm(Atom(num=inum, nam=iname, x=ix, y=iy, z=iz, typ=ityp[0]))
+                    line = f.readline().split()
+                    # The first five records always exist. The atom type recored is split handel the SYBEL atom tye.
+                    inum, iname, ix, iy, iz, ityp = int(line[0]), line[1], float(line[2]), float(line[3]), \
+                                                                                float(line[4]), line[5].split(".")[0]
+                    # The position of charge recored depends on the presence of residue record.
+                    icharge = 0
+                    if nSubStructures == 0:
+                        # If no residue info is present. The charge (if exist) is at position 6 as float.
+                        try:
+                            icharge = float(line[6])
+                        except:
+                            pass # Then no charge record
+                    else:
+                        # The charge (if exist) is at position 8 as float.
+                        try:
+                            icharge = float(line[8])
+                        except: # Then no charge record
+                            pass
+
+                    internal_coord.addatm(Atom(num=inum, nam=iname, x=ix, y=iy, z=iz, typ=ityp, charge=icharge))
 
             # Read the bond section
             bond_found = False
@@ -620,7 +650,8 @@ class read(object):
                         else:
                             print('Warning >>> Bond order ', bond_order, ' between ', atom_i.num, '-', atom_j.num, 'is not supported, change it to numerical')
                     dij = np.linalg.norm(np.array(atom_j.cord) - np.array(atom_i.cord))
-                    internal_coord.addbond(Bond(i=atom_i, j=atom_j, r=dij))
+                    internal_coord.addbond(Bond(i=atom_i, j=atom_j, r=dij, order=bond_order))
+
 
         if atom_found and bond_found:
             return internal_coord
@@ -776,12 +807,63 @@ class write(object):
 
     @staticmethod
     def mol2(data, name):
-        if type(data) is Graph:
+        if type(data) is Graph or type(data) is Fragment:
             write._graph2mol2(data, name)
+        else:
+            print("Error >>> writing mol2 from ", type(data), " data type is not implemented." )
 
     @staticmethod
-    def _graph2mol2(data, name):
-        pass
+    def _graph2mol2(graph, name):
+
+        # Number of atoms and bonds
+        nAtom = graph.number_of_nodes
+        bonds = graph.bonds
+        nbond = len(bonds)
+        nSubstructure = 0
+
+        if nAtom == 0 :
+            print("Error >>> number of atoms can not be 0.")
+            return None
+
+
+        with open(name + ".mol2", 'w') as f:
+            # Write the MOLECULE section
+            f.write('@<TRIPOS>MOLECULE \n')
+            f.write("%s \n" % (graph.name))
+            f.write( "%i   %i   %i \n" %(nAtom, nbond, nSubstructure))
+            f.write('SMALL \n')
+            f.write('USER_CHARGES \n')
+
+            if graph.fragment:
+                # Write out the head atom
+                f.write('\n@<TRIPOS>HEAD \n')
+                f.write('{0:3d}   {1:3s} \n'.format(graph.head.atom.num, graph.head.atom.nam))
+
+                f.write('\n@<TRIPOS>TYPE \n')
+                for ff, typ in graph.atom_type():
+                    f.write('FF   {0:5s}   {1:5s} \n'.format(ff, typ))
+
+            # Write The atom section with out residue/substructure definition.
+            f.write('\n@<TRIPOS>ATOM \n')
+            for node in graph.nodes:
+                f.write('{0:3d} {1:5s} {2: .4f}  {3: .4f}  {4: .4f}  {5:4s} {6: .4f} \n'.format(node.atom.num,
+                                node.atom.nam, node.atom.x, node.atom.y, node.atom.z, node.atom.typ, node.atom.charge))
+
+            if nbond > 0:
+                # Write the bond section
+                f.write('\n@<TRIPOS>BOND \n')
+                for i, bond in enumerate(bonds):
+                    # Take care of aromatic bonds. The internal representation is 1.5f
+                    order = bond.order
+                    if order == 1.5:
+                        order = 'Ar'
+                    else:
+                        order = str(int(order))
+
+                    f.write('{0:3d} {1:3d} {2:3d}   {3:3s} \n'.format(i, bond.i.num, bond.j.num, order))
+
+
+
 
 
 

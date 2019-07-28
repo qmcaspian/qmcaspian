@@ -127,7 +127,7 @@ class Bond(object):
 
     @property
     def order(self):
-        return self._i
+        return self._order
 
     @order.setter
     def order(self, order):
@@ -135,7 +135,7 @@ class Bond(object):
 
     @property
     def show(self):
-        return [self.i.num, self.j.num, self.f, self.r]
+        return [self.i.num, self.j.num, self.order, self.f, self.r]
 
 
 class Angle(object):
@@ -688,7 +688,7 @@ class InternalCoordinate(Molecule):
         self._angles = []
         self._torsions = []
         self._impropers = []
-        self._graph = []
+        #self._graph = []
 
     @property
     def charge(self):
@@ -916,7 +916,7 @@ class InternalCoordinate(Molecule):
                                 self.addangle(angle)
             self.angles.sort()
         else:
-            print("Error >>> at least bonds are needed to construct_graph angle terms. Number of bonds are: ", self.nbond)
+            print("Error >>> at least bonds are needed to construct angle terms. Number of bonds are: ", self.nbond)
 
     @property
     def ntorsion(self):
@@ -1025,7 +1025,7 @@ class InternalCoordinate(Molecule):
 
             self.torsions.sort()
         else:
-            print("Error >>> at least 2 angles are needed to construct_graph torsion terms. Number of angles are: ",
+            print("Error >>> at least 2 angles are needed to construct  torsion terms. Number of angles are: ",
                   self.nangle)
 
     @property
@@ -1140,7 +1140,7 @@ class InternalCoordinate(Molecule):
                         self.addimproper(Improper(i=atom_i, j=atom_list[0], k=atom_list[1], l=atom_list[2], t=t))
 
         else:
-            print("Error >>> at least 2 angles are needed to construct_graph improper terms. Number of angles are: ",
+            print("Error >>> at least 2 angles are needed to construct improper terms. Number of angles are: ",
                   self.nangle)
 
     """
